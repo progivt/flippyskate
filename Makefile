@@ -13,7 +13,7 @@ flappy: $(OBJS)
 	clang++ -F /Library/Frameworks -framework SDL2 -framework SDL2_image -g -o flappy $^
 
 %.o: src/%.cpp
-	clang++ -g -std=c++14 -I./include -F /Library/Frameworks -framework SDL2 -framework SDL2_image -o $@ -c $<
+	clang++ -g -std=c++14 -I./include -F /Library/Frameworks -o $@ -c $<
 
 # main.o : main.h
 
