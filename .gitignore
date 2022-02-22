@@ -1,4 +1,6 @@
 .DS_Store
+flappy
+include/SDL2
 
 # Prerequisites
 *.d
