@@ -1,14 +1,13 @@
 #include <iostream>
-
 #include "game.hpp"
 
-void die(const char* msg1, const char* msg2, int errorCode=1) {
+void die(const char* msg1, const char* msg2, int errorCode=1){
 	std::cerr << msg1 << msg2;
 	exit(errorCode);
 }
 
-
 Game::Game(int width, int height, const char* windowTitle){
+    // Иницаилизация SDL
     if (SDL_Init(SDL_INIT_VIDEO) < 0) {
     	die("SDL init error: ", SDL_GetError());
     }
@@ -19,8 +18,9 @@ Game::Game(int width, int height, const char* windowTitle){
     SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER,1);
     SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE,24);
 
-    if (!IMG_Init(IMG_INIT_PNG)) 
+    if (!IMG_Init(IMG_INIT_PNG)) {
     	die("SDL init error: ", SDL_GetError());
+    }
 
 	window = SDL_CreateWindow(windowTitle,
                               SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
@@ -39,14 +39,14 @@ void Game::CreateEntity(Sprite sprite, float _px, float _py,
     entities.push_back(Entity(renderer, sprite, _px, _py, _vx, _vy, _ax, _ay));
 }
 
-void Game::tick(Uint64 dt){
-    for (auto e : entities){
-        e.tick(dt);
+void Game::Tick(Uint64 dt){
+    for (auto& e : entities){
+        e.Tick(dt);
     }
 }
 
 Game::~Game(){
-    for (auto s : sprites){
+    for (auto& s : sprites){
         SDL_DestroyTexture(s.texture);
     }
 	SDL_DestroyWindow(window);

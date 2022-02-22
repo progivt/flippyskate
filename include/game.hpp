@@ -21,7 +21,7 @@ public:
     void LoadSprite(const char* path);
     void CreateEntity(Sprite sprite, float _px=0, float _py=0, 
                       float _vx=0, float _vy=0, float _ax=0, float _ay=0);
-    void tick(Uint64 dt);
+    void Tick(Uint64 dt);
 
 private:
     SDL_Event event;

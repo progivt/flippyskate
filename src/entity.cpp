@@ -16,19 +16,21 @@ Entity::Entity(SDL_Renderer *_renderer, Sprite _sprite,
 	SDL_GetRendererOutputSize(_renderer, &W, &H);
 }
 
-void Entity::tick(Uint64 dt){
+// один временной шаг
+void Entity::Tick(Uint64 dt){
 	vx += ax * dt;
 	vy += ay * dt;
 	px += vx * dt;
 	py += vy * dt;
 }
 
+// рисование в текущих координатах
 void Entity::draw(){
 	draw(px, py);
 }
 
+// рисование с x-обрезкой по ширине окна в произвольных координатах
 void Entity::draw(float _px, float _py){
-	// рисование с x-обрезкой по ширине окна
 	SDL_Rect srcRect {this->srcRect};
 	SDL_Rect dstRect {(int)_px, (int)_py, srcRect.w, srcRect.h};
 	int margin;

@@ -17,7 +17,7 @@ public:
 	float px, py, vx, vy, ax, ay;
 	Entity(SDL_Renderer *_renderer, Sprite sprite,
 		   float _px=0, float _py=0, float _vx=0, float _vy=0, float _ax=0, float _ay=0);
-	void tick(Uint64 dt);
+	void Tick(Uint64 dt);
 	void draw();
 	void draw(float _px, float _py);
 private:
