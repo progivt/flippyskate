@@ -9,8 +9,10 @@ void die(const char* msg1, const char* msg2, int errorCode=1) {
 
 
 Game::Game(int width, int height, const char* windowTitle){
-    if (SDL_Init(SDL_INIT_VIDEO) < 0) 
+    if (SDL_Init(SDL_INIT_VIDEO) < 0) {
     	die("SDL init error: ", SDL_GetError());
+    }
+    
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 4);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 1);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
@@ -30,6 +32,17 @@ Game::Game(int width, int height, const char* windowTitle){
 
 void Game::LoadSprite(const char* path){ 
     sprites.push_back(Sprite(renderer, path));
+}
+
+void Game::CreateEntity(Sprite sprite, float _px, float _py, 
+                      float _vx, float _vy, float _ax, float _ay){
+    entities.push_back(Entity(renderer, sprite, _px, _py, _vx, _vy, _ax, _ay));
+}
+
+void Game::tick(Uint64 dt){
+    for (auto e : entities){
+        e.tick(dt);
+    }
 }
 
 Game::~Game(){

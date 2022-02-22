@@ -1,1 +1,4 @@
-https://pixabay.com/photos/indoors-empty-hockey-rink-arena-3133818/
+bg2.png:
+	https://pixabay.com/photos/indoors-empty-hockey-rink-arena-3133818/
+skater.png:
+	https://www.deviantart.com/albertov/art/Ice-skater-745850407

@@ -1,4 +1,3 @@
-#include <iostream>
 #include "entity.hpp"
 
 Sprite::Sprite(SDL_Renderer *_renderer, const char* path) {
