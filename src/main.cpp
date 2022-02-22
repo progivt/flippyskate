@@ -1,71 +1,44 @@
 #include <iostream>
 
-#include <SDL2/SDL.h>
-#include <SDL2_image/SDL_image.h>
-#include <glad/glad.h>
+#include "game.h"
 
-SDL_Surface* loadSurface(const char* path, SDL_Surface* screenSurface) {
-    SDL_Surface *optimizedSurface = NULL, 
-                *loadedSurface = IMG_Load(path);
-    if (loadedSurface == NULL)
-        std::cerr << "Unable to load image " << path 
-                  << " SDL_image Error: " << IMG_GetError();
-    else {
-        //Convert surface to screen format
-        optimizedSurface = SDL_ConvertSurface(loadedSurface, screenSurface->format, 0);
-        if (optimizedSurface == NULL)
-            std::cerr << "Unable to optimize image " << path 
-                      << " SDL Error: " << SDL_GetError();
-        SDL_FreeSurface(loadedSurface);
-    }
-    return optimizedSurface;
-}
+#define WIDTH 800
+#define HEIGHT 600
 
 int main(int argc, char* argv[]) {
 
-    SDL_Window* window = nullptr;
-    SDL_Surface *screen, *bg;
+    Game game(WIDTH, HEIGHT, "Flappy Skater");
 
-    if (SDL_Init(SDL_INIT_VIDEO) < 0) {
-        std::cerr << "SDL init error: " << SDL_GetError();
-        return 1;
-    } 
-    
-    // SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 4);
-    // SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 1);
-    // SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
-    // SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER,1);
-    // SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE,24);
-
-    window = SDL_CreateWindow("Flappy Skater",
-                              20, 20,
-                              640, 480,
-                              SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL);
-
-    SDL_GLContext context = SDL_GL_CreateContext(window);
-
-    // Setup our function pointers
-    gladLoadGLLoader(SDL_GL_GetProcAddress);
-
-    screen = SDL_GetWindowSurface(window);
-    
-    // bg = SDL_LoadBMP("./res/bg1.bmp");
-    bg = loadSurface("res/bg1.jpeg", screen);
-
-    SDL_BlitSurface(bg, NULL, screen, NULL);
-    SDL_UpdateWindowSurface(window);
+    SDL_Renderer *renderer = game.renderer;
+    SDL_Texture *bg = IMG_LoadTexture(renderer, "./res/bg2.png");
 
     SDL_Event event;
     event.type = SDL_FIRSTEVENT;
 
     bool newPress = true;
-    while (event.type != SDL_QUIT) {
-        
-        glViewport(0, 0, 640, 480);
+    int i=0;
+    Uint64 t0 = SDL_GetTicks64();
+    Uint64 tLastRender = t0, t, dt;
 
-        while (SDL_PollEvent(&event)){
-            // Handle each specific event
-            if (event.type == SDL_QUIT) break;
+
+    SDL_Rect bgDst {0, 0, 2*WIDTH, HEIGHT},
+             bgSrc {0, 0, WIDTH, HEIGHT};
+    float bgDstx = bgDst.x;
+    int iters = 0;
+
+    while (event.type != SDL_QUIT) {
+        t = SDL_GetTicks64();
+        dt = t - t0; 
+        bgDstx -= 0.3 * dt;
+        bgDst.x = bgDstx;
+        if (bgDstx < -WIDTH) bgDstx = 0;
+
+        while (SDL_PollEvent(&event)) {
+            if (event.type == SDL_QUIT) {
+                float ms = SDL_GetTicks();
+                std::cout << iters << " steps @" << ms << "ms, @" << 1000.0*iters/ms << " fps\n";
+                break;
+            }
             
             if (event.type == SDL_MOUSEMOTION) {
                 std::cout << "mouse has been moved\n";
@@ -79,15 +52,14 @@ int main(int argc, char* argv[]) {
             }
         }
 
-        glClearColor(1.0f,0.0f,0.0f,1.0f);
-        glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
-
-        SDL_GL_SwapWindow(window);
+        if (t - tLastRender > 16) {
+            SDL_RenderClear(renderer);
+            SDL_RenderCopy(renderer, bg, &bgSrc, &bgDst);
+            SDL_RenderPresent(renderer);
+            tLastRender = t;
+            iters++;
+        }
+        t0 = t;
     }
-
-    SDL_FreeSurface(bg);
-    SDL_DestroyWindow(window);
-    SDL_Delay(500);
-    SDL_Quit();
     return 0;
 }
