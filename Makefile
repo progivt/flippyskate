@@ -2,7 +2,6 @@ OBJS = \
     main.o \
     game.o \
     entity.o \
-    glad.o
 
 
 REBUILDABLES = $(OBJS) flappy
