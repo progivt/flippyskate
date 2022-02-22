@@ -1,17 +1,27 @@
 #pragma once
-
 #include <SDL2/SDL.h>
 #include <SDL2_image/SDL_image.h>
 
+// текстура из файла и ее размеры
+class Sprite {
+public:
+	Sprite(SDL_Renderer *_renderer, const char* path);
+	int w, h;
+	SDL_Texture *texture;
+};
+
+// объект, отрисовываемый из текстуры, с вещественными положением, 
+// скоростью и ускорением
 class Entity {
 public:
 	float px, py, vx, vy, ax, ay;
-	Entity(SDL_Renderer *_renderer, const char*filename, int _w, int _h, 
-		   int _px=0, int _py=0, int _vx=0, int _vy=0, int _ax=0, int _ay=0);
+	Entity(SDL_Renderer *_renderer, Sprite sprite,
+		   float _px=0, float _py=0, float _vx=0, float _vy=0, float _ax=0, float _ay=0);
 	void draw();
 	void draw(float _px, float _py);
 private:
 	SDL_Renderer *renderer;
-	SDL_Texture *tx;
+	Sprite sprite;
+	int W, H;
 	SDL_Rect srcRect;
 };

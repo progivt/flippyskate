@@ -28,7 +28,14 @@ Game::Game(int width, int height, const char* windowTitle){
 	renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
 }
 
+void Game::LoadSprite(const char* path){ 
+    sprites.push_back(Sprite(renderer, path));
+}
+
 Game::~Game(){
+    for (auto s : sprites){
+        SDL_DestroyTexture(s.texture);
+    }
 	SDL_DestroyWindow(window);
     SDL_Delay(500);
     SDL_Quit();

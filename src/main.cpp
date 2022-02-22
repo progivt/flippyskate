@@ -10,7 +10,8 @@ int main(int argc, char* argv[]) {
     Game game(WIDTH, HEIGHT, "Flappy Skater");
 
     SDL_Renderer *renderer = game.renderer;
-    Entity bg(renderer, "./res/bg2.png", WIDTH, HEIGHT);
+    game.LoadSprite("./res/bg2.png");
+    Entity bg(renderer, game.sprites[0]);
 
     SDL_Event event;
     event.type = SDL_FIRSTEVENT;
