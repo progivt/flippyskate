@@ -17,6 +17,13 @@ Entity::Entity(SDL_Renderer *_renderer, Sprite _sprite,
 	SDL_GetRendererOutputSize(_renderer, &W, &H);
 }
 
+void Entity::tick(Uint64 dt){
+	vx += ax * dt;
+	vy += ay * dt;
+	px += vx * dt;
+	py += vy * dt;
+}
+
 void Entity::draw(){
 	draw(px, py);
 }

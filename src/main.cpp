@@ -11,7 +11,7 @@ int main(int argc, char* argv[]) {
 
     SDL_Renderer *renderer = game.renderer;
     game.LoadSprite("./res/bg2.png");
-    Entity bg(renderer, game.sprites[0]);
+    Entity bg(renderer, game.sprites[0], 0,0, -0.3,0, 0,0);
 
     SDL_Event event;
     event.type = SDL_FIRSTEVENT;
@@ -24,7 +24,7 @@ int main(int argc, char* argv[]) {
     while (event.type != SDL_QUIT) {
         t = SDL_GetTicks64();
         dt = t - t0; 
-        bg.px -= 0.3 * dt;
+        bg.tick(dt);
         if (bg.px < -WIDTH) bg.px = 0;
 
         while (SDL_PollEvent(&event)) {
