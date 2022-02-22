@@ -7,7 +7,6 @@ REBUILDABLES = $(OBJS) flappy
 
 all: flappy
 	./flappy
-	echo All done
 
 flappy: $(OBJS)
 	clang++ -F /Library/Frameworks -framework SDL2 -framework SDL2_image -g -o flappy $^
