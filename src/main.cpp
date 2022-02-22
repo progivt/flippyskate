@@ -47,16 +47,12 @@ int main(int argc, char* argv[]) {
     // Setup our function pointers
     gladLoadGLLoader(SDL_GL_GetProcAddress);
 
-    //SDL_Surface* bg = loadSurface("res/bg1.jpeg", screen);
-
     screen = SDL_GetWindowSurface(window);
     
-    SDL_Surface* image;
-    // image = SDL_LoadBMP("./res/bg1.bmp");
-    image = loadSurface("res/bg1.jpeg", screen);
+    // bg = SDL_LoadBMP("./res/bg1.bmp");
+    bg = loadSurface("res/bg1.jpeg", screen);
 
-    SDL_BlitSurface(image, NULL, screen, NULL);
-    SDL_FreeSurface(image);
+    SDL_BlitSurface(bg, NULL, screen, NULL);
     SDL_UpdateWindowSurface(window);
 
     SDL_Event event;
@@ -89,6 +85,7 @@ int main(int argc, char* argv[]) {
         SDL_GL_SwapWindow(window);
     }
 
+    SDL_FreeSurface(bg);
     SDL_DestroyWindow(window);
     SDL_Delay(500);
     SDL_Quit();
