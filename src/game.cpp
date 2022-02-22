@@ -45,6 +45,14 @@ void Game::Tick(Uint64 dt){
     }
 }
 
+void Game::draw(){
+    SDL_RenderClear(renderer);
+    for (auto& e : entities){
+        e.draw();
+    }
+    SDL_RenderPresent(renderer);
+}
+
 Game::~Game(){
     for (auto& s : sprites){
         SDL_DestroyTexture(s.texture);

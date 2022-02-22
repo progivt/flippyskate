@@ -13,9 +13,11 @@ int main(int argc, char* argv[]) {
     game.LoadSprite("./res/bg2.png");
     game.LoadSprite("./res/skater.png");
     game.CreateEntity(game.sprites[0], 0,0, -0.3,0, 0,0);
+    game.CreateEntity(game.sprites[0], WIDTH,0, -0.3,0, 0,0);
     game.CreateEntity(game.sprites[1], 100,0, 0,0.05, 0,0.0002);
     Entity *bg = &game.entities[0],
-           *hero = &game.entities[1];
+           *bg2 = &game.entities[1],
+           *hero = &game.entities[2];
 
     SDL_Event event;
     event.type = SDL_FIRSTEVENT;
@@ -26,13 +28,15 @@ int main(int argc, char* argv[]) {
     int frames = 0, ticks = 0;
     
     while (event.type != SDL_QUIT) {
-        ticks++;
         t = SDL_GetTicks64();
         dt = t - lastTime; 
         game.Tick(dt);
+        ticks++;
 
-
-        if (bg->px < -WIDTH) bg->px = 0;
+        if (bg->px < -WIDTH) {
+            bg->px = 0;
+            bg2->px = WIDTH;
+        }
 
         while (SDL_PollEvent(&event)) {
             if (event.type == SDL_QUIT) {
@@ -52,11 +56,7 @@ int main(int argc, char* argv[]) {
         }
 
         if (t - lastRenderTime > 16) {
-            SDL_RenderClear(renderer);
-            bg->draw();
-            bg->draw(bg->px+WIDTH, bg->py);
-            hero->draw();
-            SDL_RenderPresent(renderer);
+            game.draw();
             lastRenderTime = t;
             frames++;
         }
