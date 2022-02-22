@@ -1,6 +1,6 @@
 #include <iostream>
 
-#include "game.h"
+#include "game.hpp"
 
 void die(const char* msg1, const char* msg2, int errorCode=1) {
 	std::cerr << msg1 << msg2;

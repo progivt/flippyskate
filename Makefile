@@ -1,6 +1,7 @@
 OBJS = \
     main.o \
     game.o \
+    entity.o \
     glad.o
 
 

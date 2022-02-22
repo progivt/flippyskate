@@ -6,6 +6,8 @@
 #include <SDL2_image/SDL_image.h>
 #include <glad/glad.h>
 
+#include "entity.hpp"
+
 class Game {
 
 public:
