@@ -15,6 +15,7 @@ public:
 class Entity {
 public:
 	float px, py, vx, vy, ax, ay;
+	int W, H;
 	Entity(SDL_Renderer *_renderer, Sprite sprite,
 		   float _px=0, float _py=0, float _vx=0, float _vy=0, float _ax=0, float _ay=0);
 	void Tick(Uint64 dt);
@@ -23,6 +24,6 @@ public:
 private:
 	SDL_Renderer *renderer;
 	Sprite sprite;
-	int W, H;
+	
 	SDL_Rect srcRect;
 };
