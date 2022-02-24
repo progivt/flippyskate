@@ -1,9 +1,11 @@
 #include <iostream>
 #include <memory>
+#include <string>
 
 #include "engine.hpp"
 
 #define RENDER_THRESHOLD_MS 16
+#define IMG_LOCATION "./res/"
 
 void die(const char* msg1, const char* msg2, int errorCode=1) {
     std::cerr << msg1 << msg2;
@@ -28,14 +30,10 @@ Engine::Engine(int width, int height)
     : W {width}, H {height} {
     initSDL(width, height);
 
-    loadSprite("./res/bg2.png");
-    loadSprite("./res/skater2.png");
-    loadSprite("./res/podium.png");
-    
-    bg =     Background(renderer, &sprites[0], 0,0, -0.3,0, 0,0);
-    player = Entity(renderer, &sprites[1], 100,0, 0,0.05, 0,0.0002);
-    col1 =   Entity(renderer, &sprites[2], W-100,H/2, -0.3,0, 0,0);
-    col2 =   Entity(renderer, &sprites[2], W-300,2*H/3, -0.3,0, 0,0);
+    bg =     Background(renderer, getTexture("bg2"), 0,0, -0.3,0, 0,0);
+    player = Entity(renderer, getTexture("skater2"), 100,0, 0,0.05, 0,0.0002);
+    col1 =   Entity(renderer, getTexture("podium"), W-100,H/2, -0.3,0, 0,0);
+    col2 =   Entity(renderer, getTexture("podium"), W-300,2*H/3, -0.3,0, 0,0);
     
     entities = std::vector<Entity *> {&bg, &player, &col1, &col2};
 
@@ -45,20 +43,29 @@ Engine::Engine(int width, int height)
     repaint();
 }
 
-void Engine::loadSprite(const char* path) { 
-    sprites.push_back(Sprite(renderer, path));
+Texture Engine::getTexture(const char* filename) {
+    if (images.find(filename) == images.end()) {
+        SDL_Texture* texture;
+        std::string path = IMG_LOCATION;
+        path = path + filename + ".png";
+
+        if ((texture = IMG_LoadTexture(renderer, path.c_str()))  != NULL) {
+            int w, h;
+            // получить и запомнить размеры текстуры
+            SDL_QueryTexture(texture, NULL, NULL, &w, &h);
+            images[filename] = Texture {w, h, texture};
+        }
+    }
+    return images[filename];
 }
 
 void Engine::update() {
-    Uint64 t = SDL_GetTicks64(), 
-           dt = t - lastTime; 
+    Uint64 t = SDL_GetTicks64();
+    Uint64 dt = t - lastTime; 
     
     for (auto& e : entities) {
         e->tick(dt);
     }
-
-    if (bg.px < -W) 
-        bg.px = 0;
 
     col1.px = col1.px < -col1.srcRect.w ? W : col1.px;
 
@@ -99,8 +106,8 @@ void Engine::repaint() {
 }
 
 Engine::~Engine() {
-    for (auto& s : sprites) {
-        SDL_DestroyTexture(s.texture);
+    for (auto& [name, Texture] : images) {
+        SDL_DestroyTexture(Texture.texture);
     }
     IMG_Quit();
     SDL_DestroyWindow(window);

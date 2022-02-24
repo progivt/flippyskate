@@ -1,5 +1,6 @@
 #pragma once
 #include <vector>
+#include <map>
 #include <memory>
 
 #include <SDL2/SDL.h>
@@ -18,10 +19,10 @@ class Engine {
 	  
     SDL_Renderer *renderer;
     SDL_Window *window;
-    std::vector<Sprite> sprites;
     std::vector<Entity*> entities;
+    std::map<const char*, Texture> images;
     
-    void loadSprite(const char* path);
+    Texture getTexture(const char* path);
     void update();
     void repaint();
     void handleEvent(SDL_Event e);

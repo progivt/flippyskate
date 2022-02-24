@@ -3,6 +3,7 @@
 
 void Background::tick(Uint64 dt) { 
 	Entity::tick(dt); 
+	printf("Btick\n");
 	if (px < -screenW) {
 	    px = 0;
 	}

@@ -1,31 +1,22 @@
 #include "entity.hpp"
+#include "stdio.h"
 
-
-Sprite::Sprite(SDL_Renderer *_renderer, const char* path) {
-	if (path !=nullptr && _renderer != nullptr) {
-		texture = IMG_LoadTexture(_renderer, path);
-		// получить и запомнить размеры текстуры
-		SDL_QueryTexture(texture, NULL, NULL, &w, &h);
-	}
-}
-
-Entity::Entity(SDL_Renderer* _renderer, Sprite* _sprite,
+Entity::Entity(SDL_Renderer* _renderer, Texture _texture,
 	           float _px, float _py, float _vx, float _vy, float _ax, float _ay) 
                :
-			   renderer {_renderer}, sprite{_sprite}, 
+			   renderer {_renderer}, texture{_texture.texture}, 
 			   px{_px}, py{_py}, vx{_vx}, vy{_vy}, ax{_ax}, ay{_ay},
 			   srcRect {0, 0, 0, 0} 
 {
 	if (renderer!=nullptr)
 		SDL_GetRendererOutputSize(renderer, &screenW, &screenH);
-	if (_sprite!=nullptr){
-		srcRect.w = sprite->w;
-		srcRect.h = sprite->h;
-	}
+	srcRect.w = _texture.w;
+	srcRect.h = _texture.h;
 }
 
 // один временной шаг
 void Entity::tick(Uint64 dt){
+	printf("Etick\n");
 	vx += ax * dt;
 	vy += ay * dt;
 	px += vx * dt;
@@ -53,5 +44,5 @@ void Entity::draw(float _px, float _py){
 		srcRect.w -= margin;
 	}
 	if (srcRect.w > 0)
-		SDL_RenderCopy(renderer, sprite->texture, &srcRect, &dstRect);
+		SDL_RenderCopy(renderer, texture, &srcRect, &dstRect);
 }

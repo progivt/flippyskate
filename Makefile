@@ -17,10 +17,10 @@ flappy: $(OBJS)
 	clang++ -F /Library/Frameworks -framework SDL2 -framework SDL2_image -g -o flappy $^
 
 %.o: %.cpp
-	clang++ -g -std=c++14 -I./include -F /Library/Frameworks -o $@ -c $<
+	clang++ -g -std=c++17 -I./include -F /Library/Frameworks -o $@ -c $<
 
 main.o: engine.o
-engine.o: entity.o gameplay.o
+engine.o: entity.o gameplay.o engine.hpp
 entity.o: entity.hpp
 gameplay.o: gameplay.hpp
 
