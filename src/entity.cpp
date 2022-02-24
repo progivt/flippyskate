@@ -1,5 +1,4 @@
 #include "entity.hpp"
-#include "stdio.h"
 
 Entity::Entity(SDL_Renderer* _renderer, Texture _texture,
 	           float _px, float _py, float _vx, float _vy, float _ax, float _ay) 
@@ -16,7 +15,6 @@ Entity::Entity(SDL_Renderer* _renderer, Texture _texture,
 
 // один временной шаг
 void Entity::tick(Uint64 dt){
-	printf("Etick\n");
 	vx += ax * dt;
 	vy += ay * dt;
 	px += vx * dt;

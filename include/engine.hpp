@@ -27,7 +27,7 @@ class Engine {
     void repaint();
     void handleEvent(SDL_Event e);
   private:
-    Entity player, col1, col2;
+    Entity player, col1, col2, top1, top2;
     Background bg;
     Uint64 lastTime, lastDrawTime, ticks, frames;    
     int W, H;

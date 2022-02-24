@@ -19,23 +19,29 @@ void Engine::initSDL(int width, int height) {
     if (IMG_Init(IMG_INIT_PNG) ^ IMG_INIT_PNG) 
         die("SDL_image init error: ", IMG_GetError());
     
+    SDL_SetHint(SDL_HINT_RENDER_DRIVER, "opengl");
+
     window = SDL_CreateWindow("Flappy Skater",
                               SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
                               width, height,
                               SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL);
     renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
+
 }
 
 Engine::Engine(int width, int height) 
     : W {width}, H {height} {
     initSDL(width, height);
 
-    bg =     Background(renderer, getTexture("bg2"), 0,0, -0.3,0, 0,0);
+
+    bg =     Background(renderer, getTexture("bg2"), 0,0, -0.15,0, 0,0);
     player = Entity(renderer, getTexture("skater2"), 100,0, 0,0.05, 0,0.0002);
     col1 =   Entity(renderer, getTexture("podium"), W-100,H/2, -0.3,0, 0,0);
     col2 =   Entity(renderer, getTexture("podium"), W-300,2*H/3, -0.3,0, 0,0);
-    
-    entities = std::vector<Entity *> {&bg, &player, &col1, &col2};
+    top1 =   Entity(renderer, getTexture("top"), W-100,H/2 -670, -0.3,0, 0,0);
+    top2 =   Entity(renderer, getTexture("top"), W-300,2*H/3 -670, -0.3,0, 0,0);
+
+    entities = std::vector<Entity *> {&bg, &player, &col1, &col2, &top1, &top2};
 
     lastDrawTime = lastTime = SDL_GetTicks64();
     ticks = frames = 0;
