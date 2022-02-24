@@ -9,7 +9,10 @@
 #include "entity.hpp"
 #include "gameplay.hpp"
 
+#define WIDTH  800
+#define HEIGHT 600
 #define JUMP_ACCEL 0.23f
+
 
 class Engine {
   public:
@@ -33,4 +36,11 @@ class Engine {
     int W, H;
 
     void initSDL(int width, int height);
+};
+
+class Game {
+  public:
+    Engine engine;
+    Game();
+    void run();
 };

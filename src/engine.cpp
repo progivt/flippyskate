@@ -12,6 +12,19 @@ void die(const char* msg1, const char* msg2, int errorCode=1) {
     exit(errorCode);
 }
 
+Game::Game() : engine { Engine(WIDTH, HEIGHT) } {
+}
+
+void Game::run(){
+    while (!engine.exiting) {
+        engine.update();
+        SDL_Event event;
+        while (SDL_PollEvent(&event)) {
+            engine.handleEvent(event);
+        }
+    }
+}
+
 void Engine::initSDL(int width, int height) {
     if (SDL_Init(SDL_INIT_VIDEO) < 0) 
         die("SDL init error: ", SDL_GetError());    
