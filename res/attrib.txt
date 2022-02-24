@@ -2,3 +2,5 @@ bg2.png:
 	https://pixabay.com/photos/indoors-empty-hockey-rink-arena-3133818/
 skater.png:
 	https://www.deviantart.com/albertov/art/Ice-skater-745850407
+bg1:
+	https://www.maxpixel.net/Winter-Snowy-Forest-Nature-Snow-New-Year-Snow-Man-4397551

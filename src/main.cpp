@@ -1,6 +1,6 @@
 #include "engine.hpp"
 
-#define WIDTH 800
+#define WIDTH  800
 #define HEIGHT 600
 
 int main(int argc, char* argv[]) {
