@@ -1,4 +1,7 @@
 #pragma once
+
+#include <sstream>
+
 #include "engine.hpp"
 #include "scene.hpp"
 
@@ -16,5 +19,6 @@ class Game {
     void update();
     void repaint();
   	void loadTextures(Scene *scene);
+  	std::ostringstream strScore;
 };
 

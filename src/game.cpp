@@ -66,6 +66,23 @@ void Game::repaint(){
             engine.draw(e, e->px+WIDTH, e->py);
         }
     }
+
+    if (currentScene == &level) {        
+        strScore.str("");
+        strScore << score;
+        SDL_Color textColor = {0, 0, 33, 0};
+        SDL_Surface *surface = TTF_RenderText_Solid(
+            engine.font, strScore.str().c_str(), textColor);
+        SDL_Texture *texture = SDL_CreateTextureFromSurface(
+            engine.renderer, surface);
+        SDL_Rect scoreSrc {0, 0, surface->w, surface->h};
+        SDL_Rect scoreDst {WIDTH - surface->w - 20, 10, scoreSrc.w, scoreSrc.h};
+        SDL_RenderCopy(engine.renderer, texture, NULL, &scoreDst);
+        SDL_FreeSurface(surface);
+        SDL_DestroyTexture(texture);
+        score++;
+    }
+
     SDL_RenderPresent(rend);
 }
 

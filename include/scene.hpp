@@ -14,7 +14,6 @@ class Scene {
     Background bg;
     virtual void update(Uint64 dt);
     virtual void handleEvent(SDL_Event e);
-  private:
     int W, H;
 };
 

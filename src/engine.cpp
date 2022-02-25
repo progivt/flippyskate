@@ -5,6 +5,7 @@
 #include "engine.hpp"
 
 #define IMG_LOCATION "./res/"
+#define FONT_FILE "./res/BalonkuRegular.otf"
 
 void die(const char* msg1, const void* msg2=NULL) {
     SDL_Log(msg1, msg2);
@@ -38,8 +39,7 @@ Engine::Engine(int width, int height)
     if (TTF_Init()) 
         die ("SDL_ttf init error: %s\n", TTF_GetError());
     
-    font = TTF_OpenFont("./res/SadyanRegular.otf", 40);
-    if (font == NULL)
+    if ((font = TTF_OpenFont(FONT_FILE, 40)) == NULL)
         die("Could not load TTF font\n");
 
     SDL_Log("Engine init ok");
