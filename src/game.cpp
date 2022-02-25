@@ -87,3 +87,8 @@ void Game::repaint(){
     SDL_RenderPresent(rend);
 }
 
+int main(){
+    Game game;
+    game.run();
+    return 0;
+}

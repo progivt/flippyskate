@@ -6,6 +6,7 @@
 
 #define IMG_LOCATION "./res/"
 #define FONT_FILE "./res/BalonkuRegular.otf"
+#define FONT_SIZE 48
 
 void die(const char* msg1, const void* msg2=NULL) {
     SDL_Log(msg1, msg2);
@@ -39,7 +40,7 @@ Engine::Engine(int width, int height)
     if (TTF_Init()) 
         die ("SDL_ttf init error: %s\n", TTF_GetError());
     
-    if ((font = TTF_OpenFont(FONT_FILE, 40)) == NULL)
+    if ((font = TTF_OpenFont(FONT_FILE, FONT_SIZE)) == NULL)
         die("Could not load TTF font\n");
 
     SDL_Log("Engine init ok");

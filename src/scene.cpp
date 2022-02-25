@@ -31,7 +31,7 @@ Level::Level(int _W, int _H) : Scene {_W, _H} {
     bg =     Background("bg2", 0,0, -0.15,0, 0,0);
     player = Entity("skater2", 100,0, 0,0.05, 0,GRAVITY);
     col1 =   Entity("col", 400,-H/3, -0.3,0, 0,0);
-    col2 =   Entity("col", 400+COLUMN_DIST,0, -0.3,0, 0,0);
+    col2 =   Entity("col", 400+COLUMN_DIST,-50, -0.3,0, 0,0);
     entities = std::vector<Entity *> {&bg, &player, &col1, &col2};
 
     SDL_Log("Main level init ok");
@@ -41,12 +41,12 @@ void Level::update(Uint64 dt){
     Scene::update(dt);
     if (col1.px < -col1.srcRect.w) {
         col1.px = col2.px + COLUMN_DIST;
-        col1.py = clamp(col2.py  + 50 - (100.*rand())/RAND_MAX, -320, 0);
+        col1.py = clamp(col2.py  + 70 - (140.*rand()/RAND_MAX), -320, 0);
     } 
 
     if (col2.px < -col2.srcRect.w) {
         col2.px = col1.px + COLUMN_DIST;
-        col2.py = clamp(col1.py  + 50 - (100.*rand())/RAND_MAX, -320, 0);
+        col2.py = clamp(col1.py  + 70 - (140.*rand()/RAND_MAX), -320, 0);
     } 
 }
 
