@@ -6,7 +6,7 @@
 
 Game::Game() 
   : engine { Engine(WIDTH, HEIGHT) },
-    level { Scene(WIDTH, HEIGHT) } { 
+    level { Level(WIDTH, HEIGHT) } { 
     currentScene = &level;
     loadTextures(currentScene);
     
@@ -27,6 +27,8 @@ void Game::loadTextures(Scene* scene){
 
 void Game::run(){
     bool exiting = false;
+    SDL_Log("Starting game");
+    repaint();
     while (!exiting) {
 	    Uint64 t = SDL_GetTicks64();
 	    Uint64 dt = t - lastTime;
@@ -53,7 +55,7 @@ void Game::run(){
     std::cout << ticks << " ticks and "
       << frames << " frames in " 
       << lastTime << "ms, @" 
-      << 1000.0 * ticks / lastTime << " ticks per sec\n" 
+      << 1000.0 * ticks / lastTime << " ticks per sec, " 
       << 1000.0 * frames / lastTime << " fps\n";
 }
 

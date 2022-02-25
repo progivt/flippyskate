@@ -13,21 +13,32 @@ int clamp(int x, int min, int max) {
 }
 
 Scene::Scene(int _H, int _W) : W{_W}, H{_H} {
-    SDL_Log("Scene init start");
+    entities.push_back(&bg);
+}
+
+void Scene::update(Uint64 dt) {   
+    for (auto& e : entities) {
+        e->tick(dt);
+    }
+}
+
+void Scene::handleEvent(SDL_Event event) {
+}
+
+Level::Level(int _W, int _H) : Scene {_W, _H} {
+    SDL_Log("Main level init start");
     
     bg =     Background("bg2", 0,0, -0.15,0, 0,0);
     player = Entity("skater2", 100,0, 0,0.05, 0,GRAVITY);
     col1 =   Entity("col", 400,-H/3, -0.3,0, 0,0);
-    col2 =   Entity("col", 700,0, -0.3,0, 0,0);
+    col2 =   Entity("col", 400+COLUMN_DIST,0, -0.3,0, 0,0);
     entities = std::vector<Entity *> {&bg, &player, &col1, &col2};
 
-    SDL_Log("Scene init ok");
+    SDL_Log("Main level init ok");
 }
 
-void Scene::update(Uint64 dt) {    
-    for (auto& e : entities) {
-        e->tick(dt);
-    }
+void Level::update(Uint64 dt){
+    Scene::update(dt);
     if (col1.px < -col1.srcRect.w) {
         col1.px = col2.px + COLUMN_DIST;
         col1.py = clamp(col2.py  + 50 - (100.*rand())/RAND_MAX, -320, 0);
@@ -39,7 +50,7 @@ void Scene::update(Uint64 dt) {
     } 
 }
 
-void Scene::handleEvent(SDL_Event event) {
+void Level::handleEvent(SDL_Event event) {
     switch (event.type) {
       case SDL_MOUSEBUTTONUP:
         player.vy = JUMP_SPEED;

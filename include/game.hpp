@@ -8,7 +8,8 @@
 class Game {
   public:
     Engine 		engine;
-    Scene			level, *currentScene;
+    Level     level;
+    Scene*		currentScene;
     Uint64		lastTime, lastDrawTime, ticks, frames;
     int 			score, highScore;
 
