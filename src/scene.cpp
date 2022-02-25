@@ -2,13 +2,14 @@
 
 #include "scene.hpp"
 
-#define SCROLL_SPEED 0.0003f
-#define GRAVITY 0.0007f
-#define JUMP_SPEED -0.4f
+#define SCROLL_SPEED (0.0003f)
+#define GRAVITY      (0.0007f)
+#define JUMP_SPEED   (-0.4f)
+#define COLUMN_DIST     (420)
 
-int clamp(int x, int max, int min) {
-    x = x>max ? max : x;
-    return x<min ? min : x;
+int clamp(int x, int min, int max) {
+    x = x > max ? max : x;
+    return x < min ? min : x;
 }
 
 Scene::Scene(int _H, int _W) : W{_W}, H{_H} {
@@ -28,10 +29,14 @@ void Scene::update(Uint64 dt) {
         e->tick(dt);
     }
     if (col1.px < -col1.srcRect.w) {
-        col1.px = W;
-        col1.py = col2.px + (1.*rand())/RAND_MAX * 100;
+        col1.px = col2.px + COLUMN_DIST;
+        col1.py = clamp(col2.py  + 50 - (100.*rand())/RAND_MAX, -320, 0);
     } 
-    col2.px = col2.px < -col2.srcRect.w ? W : col2.px;
+
+    if (col2.px < -col2.srcRect.w) {
+        col2.px = col1.px + COLUMN_DIST;
+        col2.py = clamp(col1.py  + 50 - (100.*rand())/RAND_MAX, -320, 0);
+    } 
 }
 
 void Scene::handleEvent(SDL_Event event) {
