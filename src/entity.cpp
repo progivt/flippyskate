@@ -2,11 +2,11 @@
 #include "engine.hpp"
 
 Entity::Entity(const char *_imgFileName,
-	           float _px, float _py, float _vx, float _vy, float _ax, float _ay) 
-               : 
-			   px{_px}, py{_py}, vx{_vx}, vy{_vy}, ax{_ax}, ay{_ay},
-			   srcRect {0, 0, 0, 0},
-			   texture {0, 0, nullptr, _imgFileName}
+   float _px, float _py, float _vx, float _vy, float _ax, float _ay) 
+   : 
+   px{_px}, py{_py}, vx{_vx}, vy{_vy}, ax{_ax}, ay{_ay},
+   srcRect {0, 0, 0, 0},
+   texture {0, 0, nullptr, _imgFileName}
 {
 }
 
