@@ -86,6 +86,9 @@ void Engine::draw(Entity* e){
 // рисует Entity в заданном месте
 // с x-обрезкой по ширине окна
 void Engine::draw(Entity* e, float _px, float _py){
+    if (e->texture.sdlTexture == nullptr) {
+        loadEntityTexture(e);
+    }
     SDL_Rect srcRect {e->srcRect};
     SDL_Rect dstRect {(int)_px, (int)_py, srcRect.w, srcRect.h};
     int margin;
