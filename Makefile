@@ -1,5 +1,4 @@
 OBJS = \
-  build/main.o \
   build/game.o \
   build/scene.o \
   build/entity.o \
@@ -22,7 +21,6 @@ flappy: $(OBJS)
 build/%.o: %.cpp
 	clang++ -g -std=c++17 -I./include -F /Library/Frameworks -o $@ -c $<
 
-build/main.o: game.o
 build/game.o: game.hpp scene.o engine.o entity.o
 build/engine.o: engine.hpp entity.o 
 build/scene.o: scene.hpp entity.o 

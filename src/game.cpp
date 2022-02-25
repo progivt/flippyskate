@@ -10,11 +10,10 @@ Game::Game()
     currentScene = &level;
     loadTextures(currentScene);
     
-    ticks = 0; 
     repaint();
+    ticks = 0; 
     frames = 1;
     lastDrawTime = lastTime = SDL_GetTicks64();
-
     score = highScore = 0;
     SDL_Log("Game init ok");
 }
