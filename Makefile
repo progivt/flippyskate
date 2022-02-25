@@ -15,7 +15,9 @@ all: flappy
 	./build/flappy
 
 flappy: $(OBJS)
-	clang++ -F /Library/Frameworks -framework SDL2 -framework SDL2_image -g -o build/flappy $^
+	clang++ -F /Library/Frameworks \
+	    -framework SDL2 -framework SDL2_image -framework SDL2_ttf -g \
+	    -o build/flappy $^
 
 build/%.o: %.cpp
 	clang++ -g -std=c++17 -I./include -F /Library/Frameworks -o $@ -c $<

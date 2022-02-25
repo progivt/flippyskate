@@ -14,6 +14,8 @@ Game::Game()
     repaint();
     frames = 1;
     lastDrawTime = lastTime = SDL_GetTicks64();
+
+    score = highScore = 0;
     SDL_Log("Game init ok");
 }
 

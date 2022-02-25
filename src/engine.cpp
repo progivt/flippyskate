@@ -18,6 +18,9 @@ Engine::Engine(int width, int height)
     
     if (IMG_Init(IMG_INIT_PNG) ^ IMG_INIT_PNG) 
         die("SDL_image init error: %s\n", IMG_GetError());
+
+    if (TTF_Init()) 
+        die ("SDL_ttf init error: %s\n", TTF_GetError());
     
     if (SDL_SetHint(SDL_HINT_RENDER_DRIVER, "opengl")!=SDL_TRUE)
         SDL_Log("Could not set hint for OpenGL: %s\n", IMG_GetError());    

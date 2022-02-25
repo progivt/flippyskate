@@ -7,6 +7,7 @@ class Game {
     Engine 		engine;
     Scene			level, *currentScene;
     Uint64		lastTime, lastDrawTime, ticks, frames;
+    int 			score, highScore;
 
     Game();
     void run();
