@@ -27,7 +27,7 @@ void Scene::handleEvent(SDL_Event event) {
 
 Level::Level(int _W, int _H) : Scene {_W, _H} {
     bg =        Background("bg2", 0,0,   -0.15,0);
-    player =    Entity("skater2", 100,0, 0,0.05, 0,GRAVITY);
+    player =    Entity("skater", 100,100, 0,0.05, 0,GRAVITY);
     scorecard = Entity("*", W,20,    0,0);
     col1 =      Entity("col", 400,-H/3, -0.3,0);
     col2 =      Entity("col", 400+COLUMN_DIST,-50, -0.3,0);
