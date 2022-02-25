@@ -8,10 +8,15 @@ Game::Game()
   : engine { Engine(WIDTH, HEIGHT) },
     level { Level(WIDTH, HEIGHT) },
     welcomeScreen { WelcomeScreen (WIDTH, HEIGHT) } {
-    currentScene = &level;
+    
+    currentScene = &welcomeScreen;
+    welcomeScreen.start.textColor = SDL_Color {255,255,255,0};
+    loadTextures(currentScene);
+    welcomeScreen.start.px = (WIDTH - welcomeScreen.start.srcRect.w)/2;
+    welcomeScreen.start.py = (HEIGHT - welcomeScreen.start.srcRect.h)/2;
+
     score = highScore = lastScore = 0;
     level.scorecard.text = "0";
-    loadTextures(currentScene);
     
     repaint();
     ticks = 0; 
@@ -40,7 +45,7 @@ void Game::invalidateScore(){
 
 void Game::run(){
     bool exiting = false;
-    SDL_Log("Starting game");
+    SDL_Log("Game running");
     repaint();
     while (!exiting) {
 	    Uint64 t = SDL_GetTicks64();
