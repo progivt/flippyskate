@@ -1,3 +1,4 @@
+// всеведущий мегакласс
 #pragma once
 
 #include <sstream>
@@ -9,6 +10,7 @@ class Game {
   public:
     Engine 		engine;
     Level     level;
+    WelcomeScreen welcomeScreen;
     Scene*		currentScene;
     Uint64		lastTime, lastDrawTime, ticks, frames;
     unsigned 			score, highScore;
@@ -24,5 +26,4 @@ class Game {
   	std::ostringstream strScore;
   	unsigned lastScore;
 };
-
         

@@ -30,8 +30,8 @@ Engine::Engine(int width, int height)
     renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
     SDL_RendererInfo info;
     SDL_GetRendererInfo(renderer, &info);
-    SDL_Log("Renderer %s", info.name);
-    SDL_Log("Accelerated %d, VSynced %d", 
+    SDL_Log("Renderer %s: accelerated %d, VSynced %d", 
+        info.name,
         (bool)(info.flags & SDL_RENDERER_ACCELERATED),
         (bool)(info.flags & SDL_RENDERER_PRESENTVSYNC));
 
@@ -45,38 +45,37 @@ Engine::Engine(int width, int height)
 }
 
 // загружает текстуру из файла для Entity, или отрисовывает текст 
-// проверяет текстуры в мапе имя -> текстура
-// добавляет, если  ее там еще нет
+// проверяет текстуры в мапе имя -> текстура и добавляет, если  ее там еще нет
 void Engine::loadEntityTexture(Entity* e) {
-    if (e->texture.sdlTexture == nullptr){
-        if (e->name[0] != TXTMARK){
-            // графическая текстура из файла, 
-            if (images.find(e->name) == images.end()) {
-                SDL_Texture* texture;
-                std::string path = IMG_LOCATION;
-                path = path + e->name + ".png";
+    if (e->texture.sdlTexture != nullptr) 
+        return;
+    if (e->name[0] != TXTMARK){
+        // графическая текстура из файла, 
+        if (images.find(e->name) == images.end()) {
+            SDL_Texture* texture;
+            std::string path = IMG_LOCATION;
+            path = path + e->name + ".png";
 
-                if ((texture = IMG_LoadTexture(renderer, path.c_str())) != NULL) {
-                    int w, h;
-                    // получить и запомнить размеры текстуры
-                    SDL_QueryTexture(texture, NULL, NULL, &w, &h);
-                    images[e->name] = Texture {w, h, texture};
-                }
+            if ((texture = IMG_LoadTexture(renderer, path.c_str())) != NULL) {
+                int w, h;
+                // получить и запомнить размеры текстуры
+                SDL_QueryTexture(texture, NULL, NULL, &w, &h);
+                images[e->name] = Texture {w, h, texture};
             }
-            e->texture = images[e->name];
-        } else {
-            // отрисовать текст, находящийся в Entity в поле text,
-            // в текстуру
-            SDL_Surface *surface = TTF_RenderText_Solid(
-                font, e->text.c_str(), e->textColor);
-            e->texture.sdlTexture = SDL_CreateTextureFromSurface(renderer, surface);
-            e->texture.w = surface->w;
-            e->texture.h = surface->h;
-            SDL_FreeSurface(surface);
         }
-        e->srcRect.w = e->texture.w;
-        e->srcRect.h = e->texture.h;
+        e->texture = images[e->name];
+    } else {
+        // отрисовать текст, находящийся в Entity в поле text,
+        // в текстуру
+        SDL_Surface *surface = TTF_RenderText_Solid(
+            font, e->text.c_str(), e->textColor);
+        e->texture.sdlTexture = SDL_CreateTextureFromSurface(renderer, surface);
+        e->texture.w = surface->w;
+        e->texture.h = surface->h;
+        SDL_FreeSurface(surface);
     }
+    e->srcRect.w = e->texture.w;
+    e->srcRect.h = e->texture.h;
 }
 
 // рисует Entity в координатах, хранящихся в нем

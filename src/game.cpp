@@ -6,7 +6,8 @@
 
 Game::Game() 
   : engine { Engine(WIDTH, HEIGHT) },
-    level { Level(WIDTH, HEIGHT) } { 
+    level { Level(WIDTH, HEIGHT) },
+    welcomeScreen { WelcomeScreen (WIDTH, HEIGHT) } {
     currentScene = &level;
     score = highScore = lastScore = 0;
     level.scorecard.text = "0";
@@ -77,12 +78,14 @@ void Game::repaint(){
 
     SDL_Renderer* rend = engine.renderer;
     SDL_RenderClear(rend);
-    for (auto& e : currentScene->entities) {
-        engine.draw(e);
-        if (e == &currentScene->bg) {
-            engine.draw(e, e->px+WIDTH, e->py);
+    for (auto scn : std::vector<Scene*> {&welcomeScreen, &level}) {
+        for (auto& e : scn->entities) {
+            engine.draw(e);
+            if (e == &currentScene->bg) {
+                engine.draw(e, e->px+WIDTH, e->py);
+            }
         }
-    }
+    }   
     SDL_RenderPresent(rend);
 }
 

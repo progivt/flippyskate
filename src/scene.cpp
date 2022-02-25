@@ -28,16 +28,32 @@ void Scene::handleEvent(SDL_Event event) {
 Level::Level(int _W, int _H) : Scene {_W, _H} {
     SDL_Log("Main level init start");
     
-    bg =        Background("bg2", 0,0, -0.15,0, 0,0);
+    bg =        Background("bg2", 0,0,   -0.15,0);
     player =    Entity("skater2", 100,0, 0,0.05, 0,GRAVITY);
-    scorecard = Entity("*", W,20, 0, 0,0,0);
-    col1 =      Entity("col", 400,-H/3, -0.3,0, 0,0);
-    col2 =      Entity("col", 400+COLUMN_DIST,-50, -0.3,0, 0,0);
+    scorecard = Entity("*", W,20,    0,0);
+    col1 =      Entity("col", 400,-H/3, -0.3,0);
+    col2 =      Entity("col", 400+COLUMN_DIST,-50, -0.3,0);
     entities = std::vector<Entity *> {&bg, &player, &scorecard, &col1, &col2};
 
     scorecard.textColor = SDL_Color {0, 0, 33, 0};
 
     SDL_Log("Main level init ok");
+}
+
+WelcomeScreen::WelcomeScreen (int _W, int _H) : Scene {_W, _H} {
+    SDL_Log("Welcome screen init start");
+    bg = Background("bg1", 0,0, 0,0, 0,0);
+    start = Entity ("*", W/2,H/2);
+    start.text = "START!";
+    entities.push_back(&bg);
+    entities.push_back(&start);
+    SDL_Log("Welcome screen init ok");
+}
+
+void WelcomeScreen::update(Uint64 dt){
+}
+
+void WelcomeScreen::handleEvent(SDL_Event e){
 }
 
 void Level::update(Uint64 dt){
@@ -66,3 +82,4 @@ void Level::handleEvent(SDL_Event event) {
             player.vy = JUMP_SPEED;
     }
 }
+
