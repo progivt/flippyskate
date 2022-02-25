@@ -1,27 +1,32 @@
+// объект с текстурой, с вещественными 
+// положением, скоростью и ускорением
 #pragma once
 #include <iostream>
 #include <SDL2/SDL.h>
-#include <SDL2_image/SDL_image.h>
 
 // текстура из файла и ее размеры
 struct Texture {
-  int w, h;
-  SDL_Texture *texture;
+    int w, h;
+    SDL_Texture *sdlTexture;
+    const char *imgFileName;
 };
 
-// объект, отрисовываемый из текстуры, с вещественными положением, 
-// скоростью и ускорением
 class Entity {
-public:
-	float px, py, vx, vy, ax, ay;
-	int screenW, screenH;
-	Entity(SDL_Renderer *_renderer=nullptr, Texture _texture = Texture{ 0, 0, NULL },
-		   float _px=0, float _py=0, float _vx=0, float _vy=0, float _ax=0, float _ay=0);
-	virtual void tick(Uint64 dt);
-	virtual void draw();
-	void draw(float _px, float _py);
-	SDL_Rect srcRect;
-private:
-	SDL_Renderer *renderer;
-	SDL_Texture *texture;
+  public:
+    float px, py, vx, vy, ax, ay;
+    SDL_Rect srcRect;
+    Entity(const char *_imgFileName=nullptr,
+           float _px=0, float _py=0, 
+           float _vx=0, float _vy=0, 
+           float _ax=0, float _ay=0);
+    virtual void tick(Uint64 dt);
+    Texture texture;
+  private:
+    SDL_Renderer *renderer;
+};
+
+class Background : public Entity {
+  public:
+    using Entity::Entity;
+    void tick(Uint64 dt);
 };

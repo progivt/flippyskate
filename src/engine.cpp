@@ -4,67 +4,46 @@
 
 #include "engine.hpp"
 
-#define RENDER_THRESHOLD_MS 16
 #define IMG_LOCATION "./res/"
 
-void die(const char* msg1, const char* msg2, int errorCode=1) {
-    std::cerr << msg1 << msg2;
-    exit(errorCode);
-}
-
-Game::Game() : engine { Engine(WIDTH, HEIGHT) } {
-}
-
-void Game::run(){
-    while (!engine.exiting) {
-        engine.update();
-        SDL_Event event;
-        while (SDL_PollEvent(&event)) {
-            engine.handleEvent(event);
-        }
-    }
-}
-
-void Engine::initSDL(int width, int height) {
-    if (SDL_Init(SDL_INIT_VIDEO) < 0) 
-        die("SDL init error: ", SDL_GetError());    
-    
-    if (IMG_Init(IMG_INIT_PNG) ^ IMG_INIT_PNG) 
-        die("SDL_image init error: ", IMG_GetError());
-    
-    SDL_SetHint(SDL_HINT_RENDER_DRIVER, "opengl");
-
-    window = SDL_CreateWindow("Flappy Skater",
-                              SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 
-                              width, height,
-                              SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL);
-    renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
+void die(const char* msg1, const void* msg2=NULL) {
+    SDL_Log(msg1, msg2);
+    exit(1);
 }
 
 Engine::Engine(int width, int height) 
     : W {width}, H {height} {
-    initSDL(width, height);
+    if (SDL_Init(SDL_INIT_VIDEO) < 0) 
+        die("SDL init error: %s\n", SDL_GetError());    
+    
+    if (IMG_Init(IMG_INIT_PNG) ^ IMG_INIT_PNG) 
+        die("SDL_image init error: %s\n", IMG_GetError());
+    
+    if (SDL_SetHint(SDL_HINT_RENDER_DRIVER, "opengl")!=SDL_TRUE)
+        SDL_Log("Could not set hint for OpenGL: %s\n", IMG_GetError());    
 
-    bg =     Background(renderer, getTexture("bg2"), 0,0, -0.15,0, 0,0);
-    player = Entity(renderer, getTexture("skater2"), 100,0, 0,0.05, 0,0.0002);
-    col1 =   Entity(renderer, getTexture("col"), W-100,-H/2, -0.3,0, 0,0);
-    col2 =   Entity(renderer, getTexture("col"), W-300,-2*H/3, -0.3,0, 0,0);
-
-    entities = std::vector<Entity *> {&bg, &player, &col1, &col2, &top1, &top2};
-
-    lastDrawTime = lastTime = SDL_GetTicks64();
-    ticks = frames = 0;
-    exiting = false;
-    repaint();
+    window = SDL_CreateWindow("Flappy Skater",
+                              SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 
+                              W, H,
+                              SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL);
+    renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
+    
+    SDL_RendererInfo info;
+    SDL_GetRendererInfo(renderer, &info);
+    SDL_Log("Renderer %s", info.name);
+    SDL_Log("Accelerated %d, VSynced %d", 
+        (bool)(info.flags & SDL_RENDERER_ACCELERATED),
+        (bool)(info.flags & SDL_RENDERER_PRESENTVSYNC));
 }
 
+// загружает и сохраняет текстуры по имени файла в мапе имя -> текстура
 Texture Engine::getTexture(const char* filename) {
     if (images.find(filename) == images.end()) {
         SDL_Texture* texture;
         std::string path = IMG_LOCATION;
         path = path + filename + ".png";
 
-        if ((texture = IMG_LoadTexture(renderer, path.c_str()))  != NULL) {
+        if ((texture = IMG_LoadTexture(renderer, path.c_str())) != NULL) {
             int w, h;
             // получить и запомнить размеры текстуры
             SDL_QueryTexture(texture, NULL, NULL, &w, &h);
@@ -74,59 +53,43 @@ Texture Engine::getTexture(const char* filename) {
     return images[filename];
 }
 
-void Engine::update() {
-    Uint64 t = SDL_GetTicks64();
-    Uint64 dt = t - lastTime; 
-    
-    for (auto& e : entities) {
-        e->tick(dt);
+// загружает текстуру для Entity, если она еще не загружена
+void Engine::loadEntityTexture(Entity* e) {
+    SDL_Log("Loading texture for entity: %s", e->texture.imgFileName);
+    if (e->texture.sdlTexture == nullptr){
+        e->texture = getTexture(e->texture.imgFileName);
     }
-
-    col1.px = col1.px < -col1.srcRect.w ? W : col1.px;
-    col2.px = col2.px < -col2.srcRect.w ? W : col2.px;
-
-    lastTime = t;
-    ticks++;
-
-    if (t - lastDrawTime >= RENDER_THRESHOLD_MS)
-        repaint();
+    e->srcRect.w = e->texture.w;
+    e->srcRect.h = e->texture.h;
 }
 
-void Engine::handleEvent(SDL_Event event) {
-    switch (event.type) {
-      case SDL_QUIT:
-        std::cout << ticks << " ticks and "
-                  << frames << " frames in " 
-                  << lastTime << "ms, @" 
-                  << 1000.0*ticks/lastTime << " ticks per sec\n" 
-                  << 1000.0*frames/lastTime << " fps\n";
-        this->exiting = true;
-        break;
-      case SDL_MOUSEBUTTONUP:
-        player.vy = -JUMP_ACCEL;
-        break;
-      case SDL_KEYUP:
-        if (event.key.keysym.sym == SDLK_SPACE || 
-            event.key.keysym.sym == SDLK_UP || 
-            event.key.keysym.sym == SDLK_w || 
-            event.key.keysym.sym == SDLK_w)
-            player.vy = -JUMP_ACCEL;
-    }
+// рисование в координатах, хранящихся в Entity
+void Engine::draw(Entity* e){
+    draw(e, e->px, e->py);
 }
 
-void Engine::repaint() {
-    SDL_RenderClear(renderer);
-    for (auto& e : entities) {
-        e->draw();
+// рисование с x-обрезкой по ширине окна в произвольных координатах
+void Engine::draw(Entity* e, float _px, float _py){
+    SDL_Rect srcRect {e->srcRect};
+    SDL_Rect dstRect {(int)_px, (int)_py, srcRect.w, srcRect.h};
+    int margin;
+    if ((margin = dstRect.x + dstRect.w - W) > 0) {
+        dstRect.w -= margin;
+        srcRect.w -= margin;
+    } 
+    if ((margin = -dstRect.x) > 0) {
+        dstRect.x = 0;
+        dstRect.w -= margin;
+        srcRect.x += margin;
+        srcRect.w -= margin;
     }
-    SDL_RenderPresent(renderer);
-    lastDrawTime = SDL_GetTicks64();
-    frames++;
+    if (srcRect.w > 0)
+        SDL_RenderCopy(renderer, e->texture.sdlTexture, &srcRect, &dstRect);
 }
 
 Engine::~Engine() {
     for (auto& [name, Texture] : images) {
-        SDL_DestroyTexture(Texture.texture);
+        SDL_DestroyTexture(Texture.sdlTexture);
     }
     IMG_Quit();
     SDL_DestroyWindow(window);
