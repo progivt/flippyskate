@@ -12,7 +12,7 @@ int clamp(int x, int min, int max) {
     return x < min ? min : x;
 }
 
-Scene::Scene(int _H, int _W) : W{_W}, H{_H} {
+Scene::Scene(int _W, int _H) : W{_W}, H{_H} {
     entities.push_back(&bg);
 }
 
