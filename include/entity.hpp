@@ -4,6 +4,8 @@
 #include <iostream>
 #include <SDL2/SDL.h>
 
+#define TXTMARK '*'
+
 // текстура из файла и ее размеры
 struct Texture {
     int w, h;
@@ -21,6 +23,8 @@ class Entity {
            float _ax=0, float _ay=0);
     virtual void tick(Uint64 dt);
     Texture texture;
+    std::string text;
+    SDL_Color textColor {0, 0, 0, 0};
   private:
     SDL_Renderer *renderer;
 };

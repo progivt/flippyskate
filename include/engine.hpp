@@ -18,7 +18,6 @@ class Engine {
     TTF_Font *font;
     std::map<const char*, Texture> images;
     
-    Texture getTexture(const char* path);
     void loadEntityTexture(Entity* e);
     void draw(Entity* e);
     void draw(Entity* e, float _px, float _py);

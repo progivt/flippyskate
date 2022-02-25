@@ -46,31 +46,40 @@ Engine::Engine(int width, int height)
     SDL_Log("Engine init ok");
 }
 
-// загружает и сохраняет текстуры по имени файла в мапе имя -> текстура
-Texture Engine::getTexture(const char* filename) {
-    if (images.find(filename) == images.end()) {
-        SDL_Texture* texture;
-        std::string path = IMG_LOCATION;
-        path = path + filename + ".png";
-
-        if ((texture = IMG_LoadTexture(renderer, path.c_str())) != NULL) {
-            int w, h;
-            // получить и запомнить размеры текстуры
-            SDL_QueryTexture(texture, NULL, NULL, &w, &h);
-            images[filename] = Texture {w, h, texture};
-        }
-    }
-    return images[filename];
-}
-
-// загружает текстуру для Entity, если она еще не загружена
+// загружает текстуру из файла для Entity, или отрисовывает текст 
+// проверяет текстуры в мапе имя -> текстура
+// добавляет, если  ее там еще нет
 void Engine::loadEntityTexture(Entity* e) {
-    SDL_Log("Loading texture for entity: %s", e->texture.imgFileName);
+    const char* name = e->texture.imgFileName;
     if (e->texture.sdlTexture == nullptr){
-        e->texture = getTexture(e->texture.imgFileName);
+        if (name[0] != TXTMARK){
+            // графическая текстура из файла, 
+            if (images.find(name) == images.end()) {
+                SDL_Texture* texture;
+                std::string path = IMG_LOCATION;
+                path = path + name + ".png";
+
+                if ((texture = IMG_LoadTexture(renderer, path.c_str())) != NULL) {
+                    int w, h;
+                    // получить и запомнить размеры текстуры
+                    SDL_QueryTexture(texture, NULL, NULL, &w, &h);
+                    images[name] = Texture {w, h, texture};
+                }
+            }
+            e->texture = images[name];
+        } else {
+            // отрисовать текст, находящийся в Entity в поле text,
+            // в текстуру
+            SDL_Surface *surface = TTF_RenderText_Solid(
+                font, e->text.c_str(), e->textColor);
+            e->texture.sdlTexture = SDL_CreateTextureFromSurface(renderer, surface);
+            e->texture.w = surface->w;
+            e->texture.h = surface->h;
+            SDL_FreeSurface(surface);
+        }
+        e->srcRect.w = e->texture.w;
+        e->srcRect.h = e->texture.h;
     }
-    e->srcRect.w = e->texture.w;
-    e->srcRect.h = e->texture.h;
 }
 
 // рисует Entity в координатах, хранящихся в нем
