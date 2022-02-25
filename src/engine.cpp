@@ -25,11 +25,9 @@ Engine::Engine(int width, int height)
         SDL_Log("Could not set hint for OpenGL: %s\n", IMG_GetError());    
 
     window = SDL_CreateWindow("Flappy Skater",
-                              SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 
-                              W, H,
-                              SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL);
+        SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, W, H,
+        SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL);
     renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
-    
     SDL_RendererInfo info;
     SDL_GetRendererInfo(renderer, &info);
     SDL_Log("Renderer %s", info.name);
@@ -50,23 +48,22 @@ Engine::Engine(int width, int height)
 // проверяет текстуры в мапе имя -> текстура
 // добавляет, если  ее там еще нет
 void Engine::loadEntityTexture(Entity* e) {
-    const char* name = e->texture.imgFileName;
     if (e->texture.sdlTexture == nullptr){
-        if (name[0] != TXTMARK){
+        if (e->name[0] != TXTMARK){
             // графическая текстура из файла, 
-            if (images.find(name) == images.end()) {
+            if (images.find(e->name) == images.end()) {
                 SDL_Texture* texture;
                 std::string path = IMG_LOCATION;
-                path = path + name + ".png";
+                path = path + e->name + ".png";
 
                 if ((texture = IMG_LoadTexture(renderer, path.c_str())) != NULL) {
                     int w, h;
                     // получить и запомнить размеры текстуры
                     SDL_QueryTexture(texture, NULL, NULL, &w, &h);
-                    images[name] = Texture {w, h, texture};
+                    images[e->name] = Texture {w, h, texture};
                 }
             }
-            e->texture = images[name];
+            e->texture = images[e->name];
         } else {
             // отрисовать текст, находящийся в Entity в поле text,
             // в текстуру

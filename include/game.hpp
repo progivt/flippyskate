@@ -11,15 +11,18 @@ class Game {
     Level     level;
     Scene*		currentScene;
     Uint64		lastTime, lastDrawTime, ticks, frames;
-    int 			score, highScore;
+    unsigned 			score, highScore;
 
     Game();
     void run();
 
   private:
     void update();
+    void invalidateScore();
     void repaint();
   	void loadTextures(Scene *scene);
   	std::ostringstream strScore;
+  	unsigned lastScore;
 };
 
+        

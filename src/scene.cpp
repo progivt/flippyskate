@@ -28,11 +28,14 @@ void Scene::handleEvent(SDL_Event event) {
 Level::Level(int _W, int _H) : Scene {_W, _H} {
     SDL_Log("Main level init start");
     
-    bg =     Background("bg2", 0,0, -0.15,0, 0,0);
-    player = Entity("skater2", 100,0, 0,0.05, 0,GRAVITY);
-    col1 =   Entity("col", 400,-H/3, -0.3,0, 0,0);
-    col2 =   Entity("col", 400+COLUMN_DIST,-50, -0.3,0, 0,0);
-    entities = std::vector<Entity *> {&bg, &player, &col1, &col2};
+    bg =        Background("bg2", 0,0, -0.15,0, 0,0);
+    player =    Entity("skater2", 100,0, 0,0.05, 0,GRAVITY);
+    scorecard = Entity("*", W,20, 0, 0,0,0);
+    col1 =      Entity("col", 400,-H/3, -0.3,0, 0,0);
+    col2 =      Entity("col", 400+COLUMN_DIST,-50, -0.3,0, 0,0);
+    entities = std::vector<Entity *> {&bg, &player, &scorecard, &col1, &col2};
+
+    scorecard.textColor = SDL_Color {0, 0, 33, 0};
 
     SDL_Log("Main level init ok");
 }
@@ -57,8 +60,8 @@ void Level::handleEvent(SDL_Event event) {
         break;
       case SDL_KEYUP:
         if (event.key.keysym.sym == SDLK_SPACE || 
-            event.key.keysym.sym == SDLK_UP || 
-            event.key.keysym.sym == SDLK_w || 
+            event.key.keysym.sym == SDLK_UP    || 
+            event.key.keysym.sym == SDLK_w     || 
             event.key.keysym.sym == SDLK_w)
             player.vy = JUMP_SPEED;
     }

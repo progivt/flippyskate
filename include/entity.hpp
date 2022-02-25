@@ -10,7 +10,6 @@
 struct Texture {
     int w, h;
     SDL_Texture *sdlTexture;
-    const char *imgFileName;
 };
 
 class Entity {
@@ -21,12 +20,13 @@ class Entity {
            float _px=0, float _py=0, 
            float _vx=0, float _vy=0, 
            float _ax=0, float _ay=0);
+    const char* name;
     virtual void tick(Uint64 dt);
     Texture texture;
     std::string text;
     SDL_Color textColor {0, 0, 0, 0};
   private:
-    SDL_Renderer *renderer;
+    SDL_Renderer* renderer;
 };
 
 class Background : public Entity {

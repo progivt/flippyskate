@@ -19,7 +19,7 @@ class Scene {
 class Level : public Scene {
   public:
     Level(int _W, int _H);
-    Entity player, col1, col2;
+    Entity player, scorecard, col1, col2;
     virtual void update(Uint64 dt);
     virtual void handleEvent(SDL_Event e);
 };

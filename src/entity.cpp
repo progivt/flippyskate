@@ -9,7 +9,8 @@ Entity::Entity(const char *_imgFileName,
       vx{_vx}, vy{_vy}, 
       ax{_ax}, ay{_ay},
 	  srcRect {0, 0, 0, 0},
-	  texture {0, 0, nullptr, _imgFileName} {
+	  name {_imgFileName},
+	  texture {0, 0, nullptr} {
 	if (_imgFileName!= nullptr && _imgFileName[0] == TXTMARK) 
 		text += _imgFileName;
 }
