@@ -63,12 +63,13 @@ void Engine::loadEntityTexture(Entity* e) {
     e->srcRect.h = e->texture.h;
 }
 
-// рисование в координатах, хранящихся в Entity
+// рисует Entity в координатах, хранящихся в нем
 void Engine::draw(Entity* e){
     draw(e, e->px, e->py);
 }
 
-// рисование с x-обрезкой по ширине окна в произвольных координатах
+// рисует Entity в заданном месте
+// с x-обрезкой по ширине окна
 void Engine::draw(Entity* e, float _px, float _py){
     SDL_Rect srcRect {e->srcRect};
     SDL_Rect dstRect {(int)_px, (int)_py, srcRect.w, srcRect.h};

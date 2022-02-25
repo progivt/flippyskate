@@ -34,6 +34,6 @@ void Scene::handleEvent(SDL_Event event) {
             event.key.keysym.sym == SDLK_UP || 
             event.key.keysym.sym == SDLK_w || 
             event.key.keysym.sym == SDLK_w)
-            player.vy = -JUMP_ACCEL;
+            player.vy -= JUMP_ACCEL;
     }
 }
