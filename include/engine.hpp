@@ -15,6 +15,7 @@ class Engine {
 	  
     SDL_Renderer *renderer;
     SDL_Window *window;
+    TTF_Font *font;
     std::map<const char*, Texture> images;
     
     Texture getTexture(const char* path);

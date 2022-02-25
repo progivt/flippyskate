@@ -19,9 +19,6 @@ Engine::Engine(int width, int height)
     if (IMG_Init(IMG_INIT_PNG) ^ IMG_INIT_PNG) 
         die("SDL_image init error: %s\n", IMG_GetError());
 
-    if (TTF_Init()) 
-        die ("SDL_ttf init error: %s\n", TTF_GetError());
-    
     if (SDL_SetHint(SDL_HINT_RENDER_DRIVER, "opengl")!=SDL_TRUE)
         SDL_Log("Could not set hint for OpenGL: %s\n", IMG_GetError());    
 
@@ -37,6 +34,15 @@ Engine::Engine(int width, int height)
     SDL_Log("Accelerated %d, VSynced %d", 
         (bool)(info.flags & SDL_RENDERER_ACCELERATED),
         (bool)(info.flags & SDL_RENDERER_PRESENTVSYNC));
+
+    if (TTF_Init()) 
+        die ("SDL_ttf init error: %s\n", TTF_GetError());
+    
+    font = TTF_OpenFont("./res/SadyanRegular.otf", 40);
+    if (font == NULL)
+        die("Could not load TTF font\n");
+
+    SDL_Log("Engine init ok");
 }
 
 // загружает и сохраняет текстуры по имени файла в мапе имя -> текстура
