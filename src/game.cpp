@@ -9,7 +9,7 @@ Game::Game()
     level { Level(WIDTH, HEIGHT) },
     welcomeScreen { WelcomeScreen (WIDTH, HEIGHT) } {
     
-    currentScene = &welcomeScreen;
+    currentScene = &level;
     welcomeScreen.start.textColor = SDL_Color {255,255,255,0};
     loadTextures(currentScene);
     welcomeScreen.start.px = (WIDTH - welcomeScreen.start.srcRect.w)/2;

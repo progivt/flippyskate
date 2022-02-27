@@ -22,9 +22,6 @@ void Scene::update(Uint64 dt) {
     }
 }
 
-void Scene::handleEvent(SDL_Event event) {
-}
-
 Level::Level(int _W, int _H) : Scene {_W, _H} {
     bg =        Background("bg2", 0,0,   -0.15,0);
     player =    Entity("skater", 100,100, 0,0.05, 0,GRAVITY);
@@ -38,6 +35,11 @@ Level::Level(int _W, int _H) : Scene {_W, _H} {
     SDL_Log("Main level init ok");
 }
 
+void Level::reset() {
+
+}
+
+
 WelcomeScreen::WelcomeScreen (int _W, int _H) : Scene {_W, _H} {
     bg = Background("bg1", 0,0, 0,0, 0,0);
     start = Entity ("*", W/2,H/2);
@@ -50,11 +52,27 @@ WelcomeScreen::WelcomeScreen (int _W, int _H) : Scene {_W, _H} {
 void WelcomeScreen::update(Uint64 dt){
 }
 
+void WelcomeScreen::reset(){
+}
+
 void WelcomeScreen::handleEvent(SDL_Event e){
 }
 
 void Level::update(Uint64 dt){
     Scene::update(dt);
+
+    if (player.py > H - player.texture.h) {
+        player.py = H - player.texture.h - 1;
+        SDL_Log("Dead!");
+        player.name = "skater4";
+        SDL_DestroyTexture(player.texture.sdlTexture);
+        player.texture.sdlTexture = nullptr;
+        player.vy = 0;
+        player.ay = 0;
+
+    }
+     SDL_Log("py=%f", player.py);
+
     if (col1.px < -col1.srcRect.w) {
         col1.px = col2.px + COLUMN_DIST;
         col1.py = clamp(col2.py  + 70 - (140.*rand()/RAND_MAX), -320, 0);
