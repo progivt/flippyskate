@@ -50,6 +50,12 @@ void Game::run(){
     while (!exiting) {
 	    Uint64 t = SDL_GetTicks64();
 	    Uint64 dt = t - lastTime;
+        if (dt < RENDER_QUANTUM/2) {
+            SDL_Delay(RENDER_QUANTUM/2 - dt);
+            t = SDL_GetTicks64();
+            dt = t - lastTime;
+            continue;
+        }
     	currentScene -> update(dt);
         ticks++;
         lastTime = t;
