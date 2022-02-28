@@ -12,8 +12,8 @@ Game::Game()
     currentScene = &level;
     welcomeScreen.start.textColor = SDL_Color {255,255,255,0};
     loadTextures(currentScene);
-    welcomeScreen.start.px = (WIDTH - welcomeScreen.start.srcRect.w)/2;
-    welcomeScreen.start.py = (HEIGHT - welcomeScreen.start.srcRect.h)/2;
+    welcomeScreen.start.pos.x = (WIDTH - welcomeScreen.start.srcRect.w)/2;
+    welcomeScreen.start.pos.y = (HEIGHT - welcomeScreen.start.srcRect.h)/2;
 
     score = highScore = lastScore = 0;
     level.scorecard.text = "0";
@@ -39,7 +39,7 @@ void Game::invalidateScore(){
     SDL_DestroyTexture(level.scorecard.texture.sdlTexture);
     level.scorecard.texture.sdlTexture = nullptr;
     engine.loadEntityTexture(&level.scorecard);
-    level.scorecard.px = WIDTH - level.scorecard.texture.w - 20;
+    level.scorecard.pos.x = WIDTH - level.scorecard.texture.w - 20;
     lastScore = score;
 }
 
@@ -93,7 +93,7 @@ void Game::repaint(){
         for (auto& e : scn->entities) {
             engine.draw(e);
             if (e == &currentScene->bg) {
-                engine.draw(e, e->px+WIDTH, e->py);
+                engine.draw(e, e->pos + vec2{WIDTH,0});
             }
         }
     }   

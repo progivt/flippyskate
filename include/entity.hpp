@@ -6,20 +6,31 @@
 
 #define TXTMARK '*'
 
+struct vec2 {
+    float x, y;
+    vec2& operator+=(const vec2& v){ x += v.x; y += v.y; return *this;}
+    vec2& operator*=(const float a){ x *= a; y *= a; return *this;}
+    friend vec2 operator+(vec2 lhs, const vec2& rhs) { return lhs += rhs; }
+    friend vec2 operator*(const float a, vec2 v) { v *= a; return v; }
+};
+
+
 // текстура из файла и ее размеры
 struct Texture {
     int w, h;
     SDL_Texture *sdlTexture;
 };
 
+
+
 class Entity {
   public:
-    float px, py, vx, vy, ax, ay;
+    vec2 pos, v, a;
     SDL_Rect srcRect;
     Entity(const char *_imgFileName=nullptr,
-           float _px=0, float _py=0, 
-           float _vx=0, float _vy=0, 
-           float _ax=0, float _ay=0);
+           vec2 _pos=vec2 {0, 0},
+           vec2 _v=vec2 {0, 0},
+           vec2 _a=vec2 {0, 0});
     const char* name;
     virtual void tick(Uint64 dt);
     Texture texture;

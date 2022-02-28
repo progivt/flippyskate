@@ -20,7 +20,7 @@ class Engine {
     
     void loadEntityTexture(Entity* e);
     void draw(Entity* e);
-    void draw(Entity* e, float _px, float _py);
+    void draw(Entity* e, vec2 pos);
 
   private:
     int W, H;
