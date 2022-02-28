@@ -15,7 +15,7 @@ Game::Game()
     welcomeScreen.start.pos.x = (WIDTH - welcomeScreen.start.srcRect.w)/2;
     welcomeScreen.start.pos.y = (HEIGHT - welcomeScreen.start.srcRect.h)/2;
 
-    score = highScore = lastScore = 0;
+    highScore = lastScore = 0;
     level.scorecard.text = "0";
     
     repaint();
@@ -32,17 +32,17 @@ void Game::loadTextures(Scene* scene){
 }
 
 void Game::invalidateScore(){
-    if (currentScene != &level || score == lastScore) 
+    if (currentScene != &level || level.score == lastScore) 
         return;
     Entity *sc = &level.scorecard;
-    sc->text = std::to_string(score);
+    sc->text = std::to_string(level.score);
     if (sc->texture.sdlTexture != nullptr) {
         SDL_DestroyTexture(sc->texture.sdlTexture);
         sc->texture.sdlTexture = nullptr;
     }
     engine.loadEntityTexture(sc);
     sc->pos.x = WIDTH - sc->texture.w - 20;
-    lastScore = score;
+    lastScore = level.score;
 }
 
 void Game::run(){
@@ -86,7 +86,7 @@ void Game::run(){
 }
 
 void Game::repaint(){
-    score++;
+    level.score++;
     invalidateScore();
 
     SDL_Renderer* rend = engine.renderer;

@@ -22,7 +22,7 @@ class Scene {
 class Level : public Scene {
   public:
     Level(int _W, int _H);
-    int state;
+    unsigned state, score;
     Entity player, scorecard, col1, col2;
     void reset();
     void update(Uint64 dt);

@@ -29,6 +29,7 @@ Level::Level(int _W, int _H) : Scene {_W, _H} {
     col1 =      Entity("col", {(float)W,0});
     col2 =      Entity("col", {(float)W,0});
     entities = std::vector<Entity *> {&bg, &player, &scorecard, &col1, &col2};
+    
     scorecard.textColor = SDL_Color {255, 255, 255, 0};
 
     reset();
@@ -37,6 +38,7 @@ Level::Level(int _W, int _H) : Scene {_W, _H} {
 }
 
 void Level::reset() {
+    score = 0;
     bg.pos = {0,0};   bg.v = {-0.15f,0};
     player.pos = {100,100}; player.v = {0,0}; player.a = {0,0} ;
     //player.v = {0,0.05}; player.a = {0,GRAVITY}
@@ -94,16 +96,22 @@ void Level::update(Uint64 dt){
 }
 
 void Level::handleEvent(SDL_Event event) {
-    switch (event.type) {
-      case SDL_MOUSEBUTTONUP:
-        player.v.y = JUMP_SPEED;
-        break;
-      case SDL_KEYUP:
-        if (event.key.keysym.sym == SDLK_SPACE || 
+    if (event.type == SDL_MOUSEBUTTONUP || 
+        event.type == SDL_KEYUP && 
+            (event.key.keysym.sym == SDLK_SPACE || 
             event.key.keysym.sym == SDLK_UP    || 
             event.key.keysym.sym == SDLK_w     || 
             event.key.keysym.sym == SDLK_w)
+        ) 
+        switch (state){
+          case PLAYING: 
             player.v.y = JUMP_SPEED;
-    }
+            break;
+          case INTRO:
+            player.v.y = -0.05;
+            player.a.y = GRAVITY;
+            state = PLAYING;
+            break;
+        }
 }
 

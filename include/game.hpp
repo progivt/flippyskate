@@ -13,7 +13,7 @@ class Game {
     WelcomeScreen welcomeScreen;
     Scene*		currentScene;
     Uint64		lastTime, lastDrawTime, ticks, frames;
-    unsigned 	score, highScore;
+    unsigned 	highScore;
 
     Game();
     void run();

@@ -26,4 +26,3 @@ void Background::tick(Uint64 dt) {
 	    pos.x = 0;
 	}
 }
-
