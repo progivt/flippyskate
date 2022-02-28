@@ -6,6 +6,7 @@
 
 #define TXTMARK '*'
 
+// стандартный двумерный вектор 
 struct vec2 {
     float x, y;
     vec2& operator+=(const vec2& v){ x += v.x; y += v.y; return *this;}
@@ -22,7 +23,7 @@ struct Texture {
 };
 
 
-
+//  объект с положением и инфо о текстуре
 class Entity {
   public:
     vec2 pos, v, a;
@@ -40,6 +41,8 @@ class Entity {
     SDL_Renderer* renderer;
 };
 
+
+// объект "фон", отрисовывается два раза, едет равномерно 
 class Background : public Entity {
   public:
     using Entity::Entity;

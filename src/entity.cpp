@@ -7,6 +7,8 @@ Entity::Entity(const char *_imgFileName,
 	srcRect {0, 0, 0, 0},
 	name {_imgFileName},
 	texture {0, 0, nullptr} {
+	// если текстовый объект, сначала просто копируем указанную 
+	// строку в поле text за вычетом первого символа TXTMARK
 	if (_imgFileName!= nullptr && _imgFileName[0] == TXTMARK) 
 		text += _imgFileName;
 }
