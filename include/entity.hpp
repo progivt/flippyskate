@@ -1,11 +1,12 @@
-// объект с текстурой либо отрисованным текстом, 
-// с вещественными  положением, скоростью и ускорением
+// объект с с вещественными  положением, скоростью и ускорением, плюс
+// и инфо о текстуре а) из файла name.png либо 
+//                   б) отрисовкой текста из поля text цвета textColor
 #pragma once
 #include <iostream>
 #include <SDL2/SDL.h>
 
 #include "util.hpp"
-#define TXTMARK '*'
+#define TXTMARK '*' // name[0]==TXTMARK, означает что это текст
 
 class Entity {
   public:
