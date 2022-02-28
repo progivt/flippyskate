@@ -9,14 +9,14 @@ Game::Game()
     level { Level(WIDTH, HEIGHT) },
     welcomeScreen { WelcomeScreen (WIDTH, HEIGHT) } {
     
-    currentScene = &level;
     welcomeScreen.start.textColor = SDL_Color {255,255,255,0};
-    loadTextures(currentScene);
     welcomeScreen.start.pos.x = (WIDTH - welcomeScreen.start.srcRect.w)/2;
     welcomeScreen.start.pos.y = (HEIGHT - welcomeScreen.start.srcRect.h)/2;
 
     highScore = lastScore = 0;
     level.scorecard.text = "0";
+    currentScene = &level;
+    loadTextures(currentScene);
     
     repaint();
     ticks = 0; 

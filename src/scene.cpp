@@ -2,7 +2,7 @@
 
 #include "scene.hpp"
 
-#define SCROLL_SPEED (0.0003f)
+#define SCROLL_SPEED (-0.15f)
 #define GRAVITY      (0.0007f)
 #define JUMP_SPEED   (-0.4f)
 #define COLUMN_DIST     (420)
@@ -12,9 +12,8 @@ Scene::Scene(int _W, int _H) : W{_W}, H{_H} {
 }
 
 void Scene::update(Uint64 dt) {   
-    for (auto& e : entities) {
+    for (auto& e : entities)
         e->tick(dt);
-    }
 }
 
 Level::Level(int _W, int _H) : Scene {_W, _H} {
@@ -24,23 +23,17 @@ Level::Level(int _W, int _H) : Scene {_W, _H} {
     col1 =      Entity("col", {(float)W,0});
     col2 =      Entity("col", {(float)W,0});
     entities = std::vector<Entity *> {&bg, &player, &scorecard, &col1, &col2};
-    
     scorecard.textColor = SDL_Color {255, 255, 255, 0};
-
     reset();
-
     SDL_Log("Main level init ok");
 }
 
 void Level::reset() {
     score = 0;
-    bg.pos = {0,0};   bg.v = {-0.15f,0};
+    bg.pos = {0,0};   bg.v = {SCROLL_SPEED,0};
     player.pos = {100,100}; player.v = {0,0}; player.a = {0,0} ;
-    //player.v = {0,0.05}; player.a = {0,GRAVITY}
     scorecard.text = "0";
     scorecard.pos = {(float)W,20};
-    //400,(float)-H/3}, {-0.3,0});
-    //400+COLUMN_DIST,-50}, {-0.3,0});
     entities = std::vector<Entity *> {&bg, &player, &scorecard};
     state = INTRO;
 }
@@ -67,17 +60,19 @@ void WelcomeScreen::handleEvent(SDL_Event e){
 void Level::update(Uint64 dt){
     Scene::update(dt);
 
-    if (player.pos.y > H - player.texture.h) {
-        player.pos.y = H - player.texture.h - 1;
-        SDL_Log("Dead!");
-        player.name = "skater4";
+    maxy = H - player.srcRect.h - 2;
+    miny = 2;
+
+    if (player.pos.y < miny || player.pos.y > maxy) {
+        player.pos.y = clamp(player.pos.y, miny, maxy);
+        for (auto& e: entities) {
+            e->v.x = e->v.y = e->a.y = 0;
+        }
+        state = DEAD;
         SDL_DestroyTexture(player.texture.sdlTexture);
         player.texture.sdlTexture = nullptr;
-        player.v.y = 0;
-        player.a.y = 0;
-
+        player.name = "skater_dead";
     }
-     SDL_Log("py=%f", player.pos.y);
 
     if (col1.pos.x < -col1.srcRect.w) {
         col1.pos.x = col2.pos.x + COLUMN_DIST;
@@ -104,6 +99,10 @@ void Level::handleEvent(SDL_Event event) {
           case INTRO:
             player.v.y = -0.05;
             player.a.y = GRAVITY;
+            col1.pos = {(float)W, (float)-H/3};
+            col2.pos = {(float)W + COLUMN_DIST, (float)-H/5};
+            col1.v = col2.v = {SCROLL_SPEED,0};
+            entities = std::vector<Entity *> {&bg, &player, &scorecard, &col1, &col2};
             state = PLAYING;
             break;
         }

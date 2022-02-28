@@ -30,6 +30,8 @@ class Level : public Scene {
     static const int INTRO   = 0;
     static const int PLAYING = 1;
     static const int DEAD    = 2;
+  private:
+    int maxy, miny;
 };
 
 // начальный экран
