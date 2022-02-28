@@ -61,6 +61,8 @@ void Engine::loadEntityTexture(Entity* e) {
                 // получить и запомнить размеры текстуры
                 SDL_QueryTexture(texture, NULL, NULL, &w, &h);
                 images[e->name] = Texture {w, h, texture};
+                e->texture = images[e->name];
+                SDL_Log("texture %s loaded, w=%d, h=%d", path.c_str(), e->texture.w, e->texture.h );
             }
         }
         e->texture = images[e->name];
