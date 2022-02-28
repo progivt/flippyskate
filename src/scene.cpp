@@ -23,20 +23,29 @@ void Scene::update(Uint64 dt) {
 }
 
 Level::Level(int _W, int _H) : Scene {_W, _H} {
-    bg =        Background("bg2", {0,0},   {-0.15f,0});
-    player =    Entity("skater", {100,100}, {0,0.05}, {0,GRAVITY});
-    scorecard = Entity("*", {(float)W,20},    {0,0});
-    col1 =      Entity("col", {400,(float)-H/3}, {-0.3,0});
-    col2 =      Entity("col", {400+COLUMN_DIST,-50}, {-0.3,0});
+    bg =        Background("bg2");
+    player =    Entity("skater");
+    scorecard = Entity("*");
+    col1 =      Entity("col", {(float)W,0});
+    col2 =      Entity("col", {(float)W,0});
     entities = std::vector<Entity *> {&bg, &player, &scorecard, &col1, &col2};
+    scorecard.textColor = SDL_Color {255, 255, 255, 0};
 
-    scorecard.textColor = SDL_Color {0, 0, 33, 0};
+    reset();
 
     SDL_Log("Main level init ok");
 }
 
 void Level::reset() {
-
+    bg.pos = {0,0};   bg.v = {-0.15f,0};
+    player.pos = {100,100}; player.v = {0,0}; player.a = {0,0} ;
+    //player.v = {0,0.05}; player.a = {0,GRAVITY}
+    scorecard.text = "0";
+    scorecard.pos = {(float)W,20};
+    //400,(float)-H/3}, {-0.3,0});
+    //400+COLUMN_DIST,-50}, {-0.3,0});
+    entities = std::vector<Entity *> {&bg, &player, &scorecard};
+    state = INTRO;
 }
 
 

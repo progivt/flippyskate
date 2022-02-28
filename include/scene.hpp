@@ -22,10 +22,14 @@ class Scene {
 class Level : public Scene {
   public:
     Level(int _W, int _H);
+    int state;
     Entity player, scorecard, col1, col2;
     void reset();
     void update(Uint64 dt);
     void handleEvent(SDL_Event e);
+    static const int INTRO   = 0;
+    static const int PLAYING = 1;
+    static const int DEAD    = 2;
 };
 
 // начальный экран
