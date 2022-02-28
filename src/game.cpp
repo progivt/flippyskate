@@ -34,12 +34,14 @@ void Game::loadTextures(Scene* scene){
 void Game::invalidateScore(){
     if (currentScene != &level || score == lastScore) 
         return;
-
-    level.scorecard.text = std::to_string(score);
-    SDL_DestroyTexture(level.scorecard.texture.sdlTexture);
-    level.scorecard.texture.sdlTexture = nullptr;
-    engine.loadEntityTexture(&level.scorecard);
-    level.scorecard.pos.x = WIDTH - level.scorecard.texture.w - 20;
+    Entity *sc = &level.scorecard;
+    sc->text = std::to_string(score);
+    if (sc->texture.sdlTexture != nullptr) {
+        SDL_DestroyTexture(sc->texture.sdlTexture);
+        sc->texture.sdlTexture = nullptr;
+    }
+    engine.loadEntityTexture(sc);
+    sc->pos.x = WIDTH - sc->texture.w - 20;
     lastScore = score;
 }
 
