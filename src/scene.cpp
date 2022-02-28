@@ -7,11 +7,6 @@
 #define JUMP_SPEED   (-0.4f)
 #define COLUMN_DIST     (420)
 
-int clamp(int x, int min, int max) {
-    x = x > max ? max : x;
-    return x < min ? min : x;
-}
-
 Scene::Scene(int _W, int _H) : W{_W}, H{_H} {
     entities.push_back(&bg);
 }

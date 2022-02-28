@@ -1,8 +1,9 @@
 OBJS = \
   build/game.o \
+  build/engine.o \
   build/scene.o \
   build/entity.o \
-  build/engine.o
+  build/util.o
 
 REBUILDABLES = $(OBJS) flappy
 
@@ -21,10 +22,11 @@ flappy: $(OBJS)
 build/%.o: %.cpp
 	clang++ -g -std=c++17 -I./include -F /Library/Frameworks -o $@ -c $<
 
-build/game.o: game.hpp scene.o engine.o entity.o util.hpp
-build/engine.o: engine.hpp entity.o util.hpp
-build/scene.o: scene.hpp entity.o util.hpp
-build/entity.o: entity.hpp util.hpp
+build/game.o: game.hpp scene.o engine.o entity.o util.o
+build/engine.o: engine.hpp entity.o util.o
+build/scene.o: scene.hpp entity.o util.o
+build/entity.o: entity.hpp util.o
+build/util.o: util.hpp
 
 clean: 
 	rm -f $(REBUILDABLES)
