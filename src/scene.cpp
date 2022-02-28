@@ -92,10 +92,9 @@ void Level::update(Uint64 dt){
 
 void Level::handleEvent(SDL_Event event) {
     if (event.type == SDL_MOUSEBUTTONUP || 
-        event.type == SDL_KEYUP && 
-            (event.key.keysym.sym == SDLK_SPACE || 
+        event.type == SDL_KEYUP && (
+            event.key.keysym.sym == SDLK_SPACE || 
             event.key.keysym.sym == SDLK_UP    || 
-            event.key.keysym.sym == SDLK_w     || 
             event.key.keysym.sym == SDLK_w)
         ) 
         switch (state){
