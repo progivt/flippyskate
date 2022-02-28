@@ -12,12 +12,15 @@ Scene::Scene(int _W, int _H) : W{_W}, H{_H} {
 }
 
 void Scene::update(Uint64 dt) {   
-    for (auto& e : entities)
+    for (auto& e : entities){
         e->tick(dt);
+        if (e == &bg && e->pos.x < -W) 
+            e->pos.x = 0;
+    }
 }
 
 Level::Level(int _W, int _H) : Scene {_W, _H} {
-    bg =        Background("bg2");
+    bg =        Entity("bg2");
     player =    Entity("skater");
     scorecard = Entity("*");
     col1 =      Entity("col", {(float)W,0});
@@ -40,7 +43,7 @@ void Level::reset() {
 
 
 WelcomeScreen::WelcomeScreen (int _W, int _H) : Scene {_W, _H} {
-    bg = Background("bg1", {0,0}, {0,0}, {0,0});
+    bg = Entity("bg1", {0,0}, {0,0}, {0,0});
     start = Entity ("*", {W/2.f,H/2.f});
     start.text = "START!";
     entities.push_back(&bg);
@@ -107,4 +110,3 @@ void Level::handleEvent(SDL_Event event) {
             break;
         }
 }
-

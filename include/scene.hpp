@@ -11,7 +11,7 @@ class Scene {
   public:
     Scene(int _W, int _H);
     int W, H;
-    Background bg;
+    Entity bg;
     std::vector<Entity*> entities;
     virtual void reset() = 0;
     virtual void update(Uint64 dt);

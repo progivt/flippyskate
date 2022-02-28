@@ -23,12 +23,3 @@ class Entity {
   private:
     SDL_Renderer* renderer;
 };
-
-
-// объект "фон", отрисовывается два экземпляра 
-// друг за другом по горизонтали, едет равномерно 
-class Background : public Entity {
-  public:
-    using Entity::Entity;
-    void tick(Uint64 dt);
-};

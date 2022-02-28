@@ -18,11 +18,3 @@ void Entity::tick(Uint64 dt){
 	v += dt*a;
 	pos += dt*v;
 }
-
-// движущийся фон зацикливается при выезде за пределы
-void Background::tick(Uint64 dt) { 
-	Entity::tick(dt); 
-	if (pos.x < -800) {
-	    pos.x = 0;
-	}
-}
