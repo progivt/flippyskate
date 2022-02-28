@@ -19,6 +19,25 @@ void Scene::update(Uint64 dt) {
     }
 }
 
+
+////////////////////////////////////////////////////////////////////////////////
+WelcomeScreen::WelcomeScreen (int _W, int _H) : Scene {_W, _H} {
+    bg = Entity("bg1", {0,0}, {0,0}, {0,0});
+    start = Entity ("*", {W/2.f,H/2.f});
+    start.text = "START!";
+    entities.push_back(&bg);
+    entities.push_back(&start);
+    SDL_Log("Welcome screen init ok");
+}
+
+void WelcomeScreen::update(Uint64 dt){}
+
+void WelcomeScreen::reset(){}
+
+void WelcomeScreen::handleEvent(SDL_Event e){}
+
+
+////////////////////////////////////////////////////////////////////////////////
 Level::Level(int _W, int _H) : Scene {_W, _H} {
     bg =        Entity("bg2");
     player =    Entity("skater");
@@ -41,24 +60,6 @@ void Level::reset() {
     state = INTRO;
 }
 
-
-WelcomeScreen::WelcomeScreen (int _W, int _H) : Scene {_W, _H} {
-    bg = Entity("bg1", {0,0}, {0,0}, {0,0});
-    start = Entity ("*", {W/2.f,H/2.f});
-    start.text = "START!";
-    entities.push_back(&bg);
-    entities.push_back(&start);
-    SDL_Log("Welcome screen init ok");
-}
-
-void WelcomeScreen::update(Uint64 dt){
-}
-
-void WelcomeScreen::reset(){
-}
-
-void WelcomeScreen::handleEvent(SDL_Event e){
-}
 
 void Level::update(Uint64 dt){
     Scene::update(dt);
