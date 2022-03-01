@@ -6,7 +6,7 @@
 #include <SDL2/SDL.h>
 
 #include "util.hpp"
-#define TXTMARK '*' // name[0]==TXTMARK, означает что это текст
+#define TXTMARK "*" // name[0]==TXTMARK, означает что это текст
 
 class Entity {
   public:

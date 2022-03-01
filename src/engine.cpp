@@ -49,7 +49,7 @@ Engine::Engine(int width, int height)
 void Engine::loadEntityTexture(Entity* e) {
     if (e->texture.sdlTexture != nullptr) 
         return;
-    if (e->name[0] != TXTMARK){
+    if (e->name[0] != TXTMARK[0]){
         // графическая текстура из файла, 
         if (images.find(e->name) == images.end()) {
             SDL_Texture* texture;
