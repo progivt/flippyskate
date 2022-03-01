@@ -53,6 +53,7 @@ Level::Level(int _W, int _H) : Scene {_W, _H} {
     scorecard = Entity(TXTMARK);
     entities.push_back(&scorecard);
     gameover = Entity("gameover");
+    entities.push_back(&gameover);
     // highscore = Entity("highscore");
 
     reset();
@@ -76,6 +77,7 @@ void Level::reset() {
     scorecard.pos = {(float)W, 20};
 
     gameover.pos = {W+.0f, H+.0f};
+    gameover.visible = false;
     
     for (int i=0; i<numCols; i++){
         entities[colIndex+i]->pos = { (float)W + i * COLUMN_DIST, -20 - (float) (300.0f*rand())/RAND_MAX};
@@ -188,7 +190,7 @@ void Level::startDeath() {
     gameover.pos.x = (W - 390) /2;
     gameover.pos.y = -gameover.srcRect.h;
     gameover.a.y = 2*GRAVITY;
-    entities.push_back(&gameover);
+    gameover.visible = true;
 }
 
 void Level::respawnColumn(int i){

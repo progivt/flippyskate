@@ -49,8 +49,6 @@ Engine::Engine(int width, int height)
 
 // загружает текстуру из файла для Entity, или отрисовывает текст 
 void Engine::loadEntityTexture(Entity* e) {
-    // if (e->texture && e->texture->sdlTexture != nullptr) 
-    //     return;
     if (e->name[0] != TXTMARK[0]){
         // графическая текстура из файла, кэшируется в мапе "имя -> Texture"
         SDL_Log("Getting texture: <%s>", e->name);
@@ -63,13 +61,12 @@ void Engine::loadEntityTexture(Entity* e) {
                 int w, h;
                 SDL_QueryTexture(sdlTexture, NULL, NULL, &w, &h);
                 images[e->name] = Texture {w, h, sdlTexture};
-                SDL_Log("Texture <%s> loaded, w=%d, h=%d", path.c_str(), w, h);
+                SDL_Log("  Texture <%s> loaded from %s, w=%d, h=%d", e->name, path.c_str(), w, h);
             }
         } else {
-            SDL_Log("Texture <%s> found in cache", e->name);
+            SDL_Log("  Texture <%s> found in cache", e->name);
         }
         e->texture = &images[e->name];
-        SDL_Log("Texture <%s> address: %p sdltexture: %p", e->name, e->texture, e->texture->sdlTexture);
     } else {
         // сгенерировать текстуру, отрисовав текст, находящийся в поле text
         SDL_Surface *surface = TTF_RenderText_Solid(font, e->text.c_str(), e->textColor);
@@ -105,6 +102,7 @@ void Engine::draw(Entity* e, vec2 pos){
 // с x-обрезкой по ширине окна. Размеры 0 означают
 // "возьми из srcRect""
 void Engine::draw(Entity* e, int x, int y, int w, int h){
+    if (!e->visible) return;
     if (e->texture == nullptr || e->texture->sdlTexture == nullptr) {
         SDL_Log("Request to draw %s which has no texture", e->name);
         loadEntityTexture(e);
