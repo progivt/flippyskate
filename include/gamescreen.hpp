@@ -7,7 +7,7 @@
 class GameScreen : public Scene {
   public:
     GameScreen(Engine* _engine);
-    unsigned state, score, colIndex, nCols, nextColumn;
+    unsigned state, score, maxScore, col0, nCols, nextColumn;
     Entity *bg, *player, *scorecard, *gameover, *finalbox, *yourscore, *highscore;
     void reset();
     void update(Uint64 dt);
@@ -18,6 +18,8 @@ class GameScreen : public Scene {
     static const int DEAD    = 3;
   private:
     int maxy, miny;
+    void displayOverlays(bool show);
+    void overlayReset();
     void startDeath();
     void respawnColumn(int i);
 };

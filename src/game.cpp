@@ -1,6 +1,6 @@
 #include "game.hpp"
 
-#define WIDTH  1024
+#define WIDTH  800
 #define HEIGHT 600
 #define RENDER_QUANTUM 16
 

@@ -44,6 +44,10 @@ Engine::Engine(int width, int height)
     SDL_Log("Engine init ok");
 }
 
+void Engine::setFontSize(int size){
+    font = TTF_OpenFont(FONT_FILE, size==0 ? FONT_SIZE : size);
+}
+
 // загружает текстуру из файла для Entity, или отрисовывает текст 
 void Engine::loadEntityTexture(Entity* e) {
     if (e->name[0] != TXTMARK[0]){
@@ -66,7 +70,7 @@ void Engine::loadEntityTexture(Entity* e) {
         e->texture = &images[e->name];
     } else {
         // сгенерировать текстуру, отрисовав текст, находящийся в поле text
-        SDL_Surface *surface = TTF_RenderText_Solid(font, e->text.c_str(), e->textColor);
+        SDL_Surface *surface = TTF_RenderText_Blended(font, e->text.c_str(), e->textColor);
         if (e->texture != nullptr) {
             if (e->texture->sdlTexture != nullptr) {
                 SDL_DestroyTexture(e->texture->sdlTexture);

@@ -20,6 +20,7 @@ class Engine {
     std::map<const char*, Texture> images;
     
     void loadEntityTexture(Entity* e);
+    void setFontSize(int size=0);
     void draw(Entity* e);
     void draw(Entity* e, vec2 pos);
     void draw(Entity* e, int x, int y, int w, int h);

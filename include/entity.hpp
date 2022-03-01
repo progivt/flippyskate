@@ -16,7 +16,7 @@ class Entity {
     SDL_Rect srcRect;
     Texture* texture;
     std::string text;
-    SDL_Color textColor {0, 0, 0, 0};
+    SDL_Color textColor {255, 255, 255, 0};
     Entity(const char *_imgFileName=nullptr,
            vec2 _pos=vec2 {0, 0},
            vec2 _v=vec2 {0, 0},
