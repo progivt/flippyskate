@@ -162,8 +162,8 @@ void Level::startDeath() {
         e->v.x = e->v.y = e->a.y = 0;
     }
     // поменять картинку
-    SDL_DestroyTexture(player.texture.sdlTexture);
-    player.texture.sdlTexture = nullptr;
+    SDL_DestroyTexture(player.texture->sdlTexture);
+    player.texture->sdlTexture = nullptr;
     player.name = "skater_dead";
     
     // если в потолок, падаем

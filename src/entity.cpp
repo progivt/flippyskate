@@ -6,7 +6,7 @@ Entity::Entity(const char *name,
   : pos{_pos}, v{_v}, a{_a},
 	srcRect {0, 0, 0, 0},
 	name {name},
-	texture {0, 0, nullptr} {
+	texture {nullptr} {
 	// если текстовый объект, сначала просто копируем указанную 
 	// строку в поле text за вычетом первого символа TXTMARK
 	if (name!= nullptr && name[0] == TXTMARK[0]) 

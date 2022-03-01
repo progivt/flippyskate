@@ -47,37 +47,41 @@ Engine::Engine(int width, int height)
 // загружает текстуру из файла для Entity, или отрисовывает текст 
 // проверяет текстуры в мапе имя -> текстура и добавляет, если  ее там еще нет
 void Engine::loadEntityTexture(Entity* e) {
-    if (e->texture.sdlTexture != nullptr) 
+    if (e->texture && e->texture->sdlTexture != nullptr) 
         return;
     if (e->name[0] != TXTMARK[0]){
         // графическая текстура из файла, 
         if (images.find(e->name) == images.end()) {
-            SDL_Texture* texture;
             std::string path = IMG_LOCATION;
             path = path + e->name + ".png";
-
-            if ((texture = IMG_LoadTexture(renderer, path.c_str())) != NULL) {
+            
+            SDL_Texture* sdlTexture;
+            if ((sdlTexture = IMG_LoadTexture(renderer, path.c_str())) != NULL) {
                 int w, h;
                 // получить и запомнить размеры текстуры
-                SDL_QueryTexture(texture, NULL, NULL, &w, &h);
-                images[e->name] = Texture {w, h, texture};
-                e->texture = images[e->name];
-                SDL_Log("texture %s loaded, w=%d, h=%d", path.c_str(), e->texture.w, e->texture.h );
+                SDL_QueryTexture(sdlTexture, NULL, NULL, &w, &h);
+                images[e->name] = Texture {w, h, sdlTexture};
+                SDL_Log("Texture %s loaded, w=%d, h=%d", path.c_str(), w, h);
             }
         }
-        e->texture = images[e->name];
+        e->texture = &images[e->name];
     } else {
         // отрисовать текст, находящийся в Entity в поле text,
         // в текстуру
-        SDL_Surface *surface = TTF_RenderText_Solid(
-            font, e->text.c_str(), e->textColor);
-        e->texture.sdlTexture = SDL_CreateTextureFromSurface(renderer, surface);
-        e->texture.w = surface->w;
-        e->texture.h = surface->h;
+        SDL_Surface *surface = TTF_RenderText_Solid(font, e->text.c_str(), e->textColor);
+        if (e->texture != nullptr) {
+            SDL_DestroyTexture(e->texture->sdlTexture);
+        } else {
+            e->texture = new Texture;
+        }
+        e->texture->w = surface->w;
+        e->texture->h = surface->h;
+        e->texture->sdlTexture = SDL_CreateTextureFromSurface(renderer, surface);
         SDL_FreeSurface(surface);
+        SDL_Log("Text \"%s\" rendered", e->text.c_str());
     }
-    e->srcRect.w = e->texture.w;
-    e->srcRect.h = e->texture.h;
+    e->srcRect.w = e->texture->w;
+    e->srcRect.h = e->texture->h;
 }
 
 // рисует Entity в координатах, хранящихся в нем
@@ -92,9 +96,9 @@ void Engine::draw(Entity* e, vec2 pos){
 
 // рисует Entity растягивая на заданный прямоугольник
 // с x-обрезкой по ширине окна. Размеры 0 означают
-// "возьми из исходника""
+// "возьми из srcRect""
 void Engine::draw(Entity* e, int x, int y, int w, int h){
-    if (e->texture.sdlTexture == nullptr)
+    if (e->texture == nullptr || e->texture->sdlTexture == nullptr)
         loadEntityTexture(e);
     int margin = 0;
     SDL_Rect srcRect {e->srcRect};
@@ -114,12 +118,14 @@ void Engine::draw(Entity* e, int x, int y, int w, int h){
     }
     if (srcRect.w > 0) {
         SDL_Rect dstRect {x, y, w, h};
-        SDL_RenderCopy(renderer, e->texture.sdlTexture, &srcRect, &dstRect);
+        SDL_RenderCopy(renderer, e->texture->sdlTexture, &srcRect, &dstRect);
     }
 }
 
 Engine::~Engine() {
+    // почистить текстуры для картинок
     for (auto& [name, Texture] : images) {
+        SDL_Log("Destroying texture %s", name);
         SDL_DestroyTexture(Texture.sdlTexture);
     }
     IMG_Quit();

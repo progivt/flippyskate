@@ -11,11 +11,13 @@ class Game {
     Engine 		engine;
     Level     level;
     WelcomeScreen welcomeScreen;
+  	std::vector<Scene *> scenes;
     Scene*		currentScene;
     Uint64		lastTime, lastDrawTime, ticks, frames;
     unsigned 	highScore;
 
     Game();
+    ~Game();
     void run();
 
   private:

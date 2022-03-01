@@ -8,6 +8,8 @@ Game::Game()
   : engine { Engine(WIDTH, HEIGHT) },
     level { Level(WIDTH, HEIGHT) },
     welcomeScreen { WelcomeScreen (WIDTH, HEIGHT) } {
+
+    scenes = std::vector<Scene *> {&welcomeScreen, &level};
     
     welcomeScreen.start.textColor = SDL_Color {255,255,255,0};
     welcomeScreen.start.pos.x = (WIDTH - welcomeScreen.start.srcRect.w) / 2;
@@ -34,12 +36,12 @@ void Game::loadTextures(Scene* scene){
 void Game::invalidateScore(){
     Entity *sc = &level.scorecard;
     sc->text = std::to_string(level.score);
-    if (sc->texture.sdlTexture != nullptr) {
-        SDL_DestroyTexture(sc->texture.sdlTexture);
-        sc->texture.sdlTexture = nullptr;
+    if (sc->texture->sdlTexture != nullptr) {
+        SDL_DestroyTexture(sc->texture->sdlTexture);
+        sc->texture->sdlTexture = nullptr;
     }
     engine.loadEntityTexture(sc);
-    sc->pos.x = WIDTH - sc->texture.w - 20;
+    sc->pos.x = WIDTH - sc->texture->w - 20;
     lastScore = level.score;
 }
 
@@ -103,6 +105,18 @@ void Game::repaint(){
         }
     }   
     SDL_RenderPresent(engine.renderer);
+}
+
+Game::~Game() {
+    // почистить динамические текстуры для текста
+    for (auto& scene : scenes)
+        for (auto& e: scene->entities)
+            if (e->name[0] == TXTMARK[0]) {
+                SDL_Log("Destroying text %s", e->text.c_str());
+                if (e->texture && e->texture->sdlTexture) 
+                    SDL_DestroyTexture(e->texture->sdlTexture);
+                delete e->texture;
+            }
 }
 
 int main(){

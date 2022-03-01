@@ -18,7 +18,7 @@ class Entity {
            vec2 _a=vec2 {0, 0});
     const char* name;
     virtual void tick(Uint64 dt);
-    Texture texture;
+    Texture* texture;
     std::string text;
     SDL_Color textColor {0, 0, 0, 0};
 };
