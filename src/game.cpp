@@ -6,18 +6,18 @@
 
 Game::Game() 
   : engine { Engine(WIDTH, HEIGHT) },
-    level { Level(WIDTH, HEIGHT) },
+    gameScreen { GameScreen(WIDTH, HEIGHT) },
     welcomeScreen { WelcomeScreen (WIDTH, HEIGHT) } {
 
-    scenes = std::vector<Scene *> {&welcomeScreen, &level};
+    scenes = std::vector<Scene *> {&welcomeScreen, &gameScreen};
     
     welcomeScreen.start.textColor = SDL_Color {255,255,255,0};
     welcomeScreen.start.pos.x = (WIDTH - welcomeScreen.start.srcRect.w) / 2;
     welcomeScreen.start.pos.y = (HEIGHT - welcomeScreen.start.srcRect.h) / 2;
 
     highScore = 0;
-    level.scorecard.text = "0";
-    currentScene = &level;
+    gameScreen.scorecard.text = "0";
+    currentScene = &gameScreen;
     loadTextures(currentScene);
     
     repaint();

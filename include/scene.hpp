@@ -7,7 +7,6 @@
 
 #include "entity.hpp"
 
-#define TEXTURE_RELOAD 10 // Код события, запрашивающего обновление показа очков
 
 class Scene {
   public:
@@ -18,25 +17,6 @@ class Scene {
     virtual void reset() = 0;
     virtual void update(Uint64 dt);
     virtual void handleEvent(SDL_Event e) = 0;
-};
-
-// основной игровой экран
-class Level : public Scene {
-  public:
-    Level(int _W, int _H);
-    unsigned state, score, colIndex, numCols, nextColumn;
-    Entity player, scorecard, gameover;
-    void reset();
-    void update(Uint64 dt);
-    void handleEvent(SDL_Event e);
-    static const int INTRO   = 0;
-    static const int PLAYING = 1;
-    static const int DYING   = 2;
-    static const int DEAD    = 3;
-  private:
-    int maxy, miny;
-    void startDeath();
-    void respawnColumn(int i);
 };
 
 // начальный экран

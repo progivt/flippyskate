@@ -5,11 +5,12 @@
 
 #include "engine.hpp"
 #include "scene.hpp"
+#include "gamescreen.hpp"
 
 class Game {
   public:
     Engine 		engine;
-    Level     level;
+    GameScreen     gameScreen;
     WelcomeScreen welcomeScreen;
   	std::vector<Scene *> scenes;
     Scene*		currentScene;
