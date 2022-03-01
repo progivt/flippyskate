@@ -13,6 +13,7 @@ class Engine {
 	  Engine(int width, int height);
     ~Engine();
 	  
+    int W, H;
     SDL_Renderer *renderer;
     SDL_Window *window;
     TTF_Font *font;
@@ -22,7 +23,4 @@ class Engine {
     void draw(Entity* e);
     void draw(Entity* e, vec2 pos);
     void draw(Entity* e, int x, int y, int w, int h);
-
-  private:
-    int W, H;
 };

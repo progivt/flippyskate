@@ -10,8 +10,8 @@
 class Game {
   public:
     Engine 		engine;
-    GameScreen     gameScreen;
     WelcomeScreen welcomeScreen;
+    GameScreen gameScreen;
   	std::vector<Scene *> scenes;
     Scene*		currentScene;
     Uint64		lastTime, lastDrawTime, ticks, frames;
@@ -23,9 +23,8 @@ class Game {
 
   private:
     void update();
-    // void invalidateScore();
+    void invalidateScore();
     void repaint();
-  	void loadTextures(Scene *scene);
   	std::ostringstream strScore;
   	unsigned lastScore;
 };

@@ -44,9 +44,6 @@ Engine::Engine(int width, int height)
     SDL_Log("Engine init ok");
 }
 
-
-
-
 // загружает текстуру из файла для Entity, или отрисовывает текст 
 void Engine::loadEntityTexture(Entity* e) {
     if (e->name[0] != TXTMARK[0]){

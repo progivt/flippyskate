@@ -6,23 +6,29 @@
 #include <SDL2_image/SDL_image.h>
 
 #include "entity.hpp"
+#include "engine.hpp"
 
+class Engine;
 
 class Scene {
   public:
-    Scene(int _W, int _H);
+    Scene(Engine* _engine, std::vector<const char*> entitynames);
     int W, H;
-    Entity bg;
+    // объекты сцены, первый всегда фон
     std::vector<Entity*> entities;
     virtual void reset() = 0;
     virtual void update(Uint64 dt);
     virtual void handleEvent(SDL_Event e) = 0;
+    void createEntities(const std::vector<const char*>& entitynames);
+    void (*loaderCallback)(Scene *) {nullptr};
+    void loadTextures();
+    Engine* engine;
 };
 
 // начальный экран
 class WelcomeScreen : public Scene {
   public:
-    WelcomeScreen(int _W, int _H);
+    WelcomeScreen(Engine* _engine);
     Entity start;
     void reset();
     void update(Uint64 dt);

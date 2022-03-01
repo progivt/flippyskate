@@ -6,19 +6,18 @@
 
 Game::Game() 
   : engine { Engine(WIDTH, HEIGHT) },
-    gameScreen { GameScreen(WIDTH, HEIGHT) },
-    welcomeScreen { WelcomeScreen (WIDTH, HEIGHT) } {
-
+    gameScreen { GameScreen(&engine) },
+    welcomeScreen { WelcomeScreen (&engine) } {
+        
     scenes = std::vector<Scene *> {&welcomeScreen, &gameScreen};
     
     welcomeScreen.start.textColor = SDL_Color {255,255,255,0};
-    welcomeScreen.start.pos.x = (WIDTH - welcomeScreen.start.srcRect.w) / 2;
+    welcomeScreen.start.pos.x = (WIDTH  - welcomeScreen.start.srcRect.w) / 2;
     welcomeScreen.start.pos.y = (HEIGHT - welcomeScreen.start.srcRect.h) / 2;
 
     highScore = 0;
-    gameScreen.scorecard.text = "0";
+    gameScreen.scorecard->text = "0";
     currentScene = &gameScreen;
-    loadTextures(currentScene);
     
     repaint();
     ticks = 0; 
@@ -26,16 +25,6 @@ Game::Game()
     lastDrawTime = lastTime = SDL_GetTicks64();
     SDL_Log("Game init ok");
 }
-
-void Game::loadTextures(Scene* scene){
-	for (auto& e : currentScene -> entities){
-        engine.loadEntityTexture(e);
-    }
-}
-
-// void Game::reposition(){
-// }
-
 
 
 void Game::run(){
@@ -91,7 +80,7 @@ void Game::run(){
 void Game::repaint(){
     SDL_RenderClear(engine.renderer);
     for (auto& e : currentScene->entities) {
-        if (e != &currentScene->bg){
+        if (e != currentScene->entities[0]){
             engine.draw(e);
         } else {
             engine.draw(e, (int)e->pos.x, (int)e->pos.y, WIDTH, HEIGHT);
