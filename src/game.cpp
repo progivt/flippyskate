@@ -32,7 +32,6 @@ void Game::loadTextures(Scene* scene){
 }
 
 void Game::invalidateScore(){
-    SDL_Log("Updating scorecard: %d", level.score);
     Entity *sc = &level.scorecard;
     sc->text = std::to_string(level.score);
     if (sc->texture.sdlTexture != nullptr) {
@@ -76,6 +75,7 @@ void Game::run(){
                 if (event.type == SDL_USEREVENT) {
                     switch (event.user.code){
                       case SCORE_UPDATE:
+                        SDL_Log("Score updated: %d", level.score);
                         invalidateScore();
                         break;
                     }   
@@ -94,6 +94,7 @@ void Game::run(){
 
 void Game::repaint(){
     SDL_RenderClear(engine.renderer);
+    SDL_Log("Drawing %lu entities", currentScene->entities.size());
     for (auto& e : currentScene->entities) {
         if (e != &currentScene->bg){
             engine.draw(e);

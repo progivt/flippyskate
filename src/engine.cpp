@@ -94,6 +94,8 @@ void Engine::draw(Entity* e, vec2 pos){
 // с x-обрезкой по ширине окна. Размеры 0 означают
 // "возьми из исходника""
 void Engine::draw(Entity* e, int x, int y, int w, int h){
+    if (e->texture.sdlTexture == nullptr)
+        loadEntityTexture(e);
     int margin = 0;
     SDL_Rect srcRect {e->srcRect};
     if (w==0) w = srcRect.w;
@@ -111,8 +113,6 @@ void Engine::draw(Entity* e, int x, int y, int w, int h){
         srcRect.w -= xratio * margin;
     }
     if (srcRect.w > 0) {
-        if (e->texture.sdlTexture == nullptr)
-            loadEntityTexture(e);
         SDL_Rect dstRect {x, y, w, h};
         SDL_RenderCopy(renderer, e->texture.sdlTexture, &srcRect, &dstRect);
     }

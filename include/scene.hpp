@@ -25,7 +25,7 @@ class Level : public Scene {
   public:
     Level(int _W, int _H);
     unsigned state, score, colIndex, numCols, nextColumn;
-    Entity player, scorecard;
+    Entity player, scorecard, gameover;
     void reset();
     void update(Uint64 dt);
     void handleEvent(SDL_Event e);
@@ -34,6 +34,8 @@ class Level : public Scene {
     static const int DEAD    = 2;
   private:
     int maxy, miny;
+    void startDeath();
+    void respawnColumn(int i);
 };
 
 // начальный экран
