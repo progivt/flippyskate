@@ -7,6 +7,8 @@
 
 #include "entity.hpp"
 
+#define SCORE_UPDATE 10 // Код события, запрашивающего обновление показа очков
+
 class Scene {
   public:
     Scene(int _W, int _H);
@@ -22,7 +24,7 @@ class Scene {
 class Level : public Scene {
   public:
     Level(int _W, int _H);
-    unsigned state, score, colIndex, numCols;
+    unsigned state, score, colIndex, numCols, nextColumn;
     Entity player, scorecard;
     void reset();
     void update(Uint64 dt);

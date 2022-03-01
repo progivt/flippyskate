@@ -10,8 +10,8 @@ Game::Game()
     welcomeScreen { WelcomeScreen (WIDTH, HEIGHT) } {
     
     welcomeScreen.start.textColor = SDL_Color {255,255,255,0};
-    welcomeScreen.start.pos.x = (WIDTH - welcomeScreen.start.srcRect.w)/2;
-    welcomeScreen.start.pos.y = (HEIGHT - welcomeScreen.start.srcRect.h)/2;
+    welcomeScreen.start.pos.x = (WIDTH - welcomeScreen.start.srcRect.w) / 2;
+    welcomeScreen.start.pos.y = (HEIGHT - welcomeScreen.start.srcRect.h) / 2;
 
     highScore = lastScore = 0;
     level.scorecard.text = "0";
@@ -26,13 +26,13 @@ Game::Game()
 }
 
 void Game::loadTextures(Scene* scene){
-	for (auto& e : currentScene -> entities)
-		engine.loadEntityTexture(e);
+	for (auto& e : currentScene -> entities){
+        engine.loadEntityTexture(e);
+    }
 }
 
 void Game::invalidateScore(){
-    if (currentScene != &level || level.score == lastScore) 
-        return;
+    SDL_Log("Updating scorecard: %d", level.score);
     Entity *sc = &level.scorecard;
     sc->text = std::to_string(level.score);
     if (sc->texture.sdlTexture != nullptr) {
@@ -73,7 +73,15 @@ void Game::run(){
                 exiting = true;
                 break;
             } else {
-                currentScene -> handleEvent(event);
+                if (event.type == SDL_USEREVENT) {
+                    switch (event.user.code){
+                      case SCORE_UPDATE:
+                        invalidateScore();
+                        break;
+                    }   
+                } else {
+                    currentScene -> handleEvent(event);
+                }
             }
         }
     }
@@ -85,9 +93,6 @@ void Game::run(){
 }
 
 void Game::repaint(){
-    level.score++;
-    invalidateScore();
-
     SDL_RenderClear(engine.renderer);
     for (auto& e : currentScene->entities) {
         if (e != &currentScene->bg){

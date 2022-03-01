@@ -1,4 +1,6 @@
 #pragma once
+#include <SDL2/SDL.h>
+
 // стандартный двумерный вектор 
 struct vec2 {
     float x, y;
@@ -16,3 +18,4 @@ struct Texture {
 
 int clamp(int x, int min, int max);
 
+void postEvent(Sint32 code, void* d1=NULL, void* d2=NULL);

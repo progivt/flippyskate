@@ -52,7 +52,9 @@ Level::Level(int _W, int _H) : Scene {_W, _H} {
     }
     scorecard = Entity(TXTMARK);
     entities.push_back(&scorecard);
+
     reset();
+    postEvent(SCORE_UPDATE);
     SDL_Log("Main level init ok");
 }
 
@@ -73,6 +75,8 @@ void Level::reset() {
         entities[colIndex+i]->pos = { (float)W + i * COLUMN_DIST, -20 - (float) (300.0f*rand())/RAND_MAX};
         SDL_Log("Column created X=%f, Y=%f", entities[colIndex+i]->pos.x, entities[colIndex+i]->pos.y);
     }
+
+    nextColumn = 0;
     state = INTRO;
 }
 
@@ -95,10 +99,19 @@ void Level::update(Uint64 dt){
     }
 
     for (int i = colIndex; i < colIndex + numCols; i++) {
-        int prev = colIndex + (numCols + i - colIndex - 1) % numCols;
-        if (entities[i]->pos.x < -COLUMN_WIDTH) {
-            entities[i]->pos.x = entities[prev]->pos.x + COLUMN_DIST;
-            entities[i]->pos.y = clamp(entities[prev]->pos.y  + 70 - (140.*rand()/RAND_MAX), -320, 0);
+        vec2* colPos = &entities[i]->pos;
+        if (colPos->x < -COLUMN_WIDTH) {
+            // выехала за край экрана, тащим направо
+            int prevIndex = colIndex + (numCols + i - colIndex - 1) % numCols;
+            vec2 prevPos = entities[prevIndex]->pos;
+            colPos->x = prevPos.x + COLUMN_DIST;
+            colPos->y = clamp(prevPos.y  + 70 - (140.*rand()/RAND_MAX), -320, 0);
+        } else {
+            if (colPos->x + COLUMN_WIDTH < player.pos.x && i-colIndex==nextColumn) {
+                nextColumn = (nextColumn+1) % numCols;
+                score++;
+                postEvent(SCORE_UPDATE);
+            }
         }
     }
 }
@@ -109,7 +122,7 @@ void Level::handleEvent(SDL_Event event) {
             event.key.keysym.sym == SDLK_SPACE || 
             event.key.keysym.sym == SDLK_UP    || 
             event.key.keysym.sym == SDLK_w)
-        ) 
+        ) {
         switch (state){
           case PLAYING: 
             player.v.y = JUMP_SPEED;
@@ -124,4 +137,5 @@ void Level::handleEvent(SDL_Event event) {
             state = PLAYING;
             break;
         }
+    }
 }
