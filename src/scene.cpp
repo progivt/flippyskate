@@ -53,14 +53,16 @@ Level::Level(int _W, int _H) : Scene {_W, _H} {
     scorecard = Entity(TXTMARK);
     entities.push_back(&scorecard);
     gameover = Entity("gameover");
+    // highscore = Entity("highscore");
 
     reset();
-    postEvent(SCORE_UPDATE);
+    postEvent(TEXTURE_RELOAD, &scorecard);
     SDL_Log("Main level init ok");
 }
 
 void Level::reset() {
     score = 0;
+    postEvent(TEXTURE_RELOAD, &scorecard);
     
     bg.pos = {0,0};   bg.v = {SCROLL_SPEED,0};
     
@@ -77,7 +79,7 @@ void Level::reset() {
     
     for (int i=0; i<numCols; i++){
         entities[colIndex+i]->pos = { (float)W + i * COLUMN_DIST, -20 - (float) (300.0f*rand())/RAND_MAX};
-        SDL_Log("Column created X=%f, Y=%f", entities[colIndex+i]->pos.x, entities[colIndex+i]->pos.y);
+        SDL_Log("Column placed X=%f, Y=%f", entities[colIndex+i]->pos.x, entities[colIndex+i]->pos.y);
     }
     nextColumn = 0;
 
@@ -92,15 +94,18 @@ void Level::update(Uint64 dt){
         if (player.pos.y < miny || player.pos.y > maxy) {
             startDeath();
             state = DYING;
+            SDL_Log("DYING");
         } else {
             // прошли ли очередную колонну?
             if (player.pos.x > entities[colIndex+nextColumn]->pos.x + COLUMN_WIDTH / 2) 
             {
                 score++;
+                SDL_Log("Score: %d", score);
+                scorecard.text = std::to_string(score);
                 nextColumn = (nextColumn+1) % numCols;
-                postEvent(SCORE_UPDATE);
+                postEvent(TEXTURE_RELOAD, &scorecard);
             }
-            // выехавшие с левого края колонны респауним справа
+            // уехавшие за левый борт колонны респаунятся справа
             for (int i = 0; i < numCols; i++) {
                 if (entities[colIndex+i]->pos.x < -COLUMN_WIDTH) {
                     respawnColumn(i);
@@ -119,7 +124,14 @@ void Level::update(Uint64 dt){
             player.v.y = player.a.y = 0;
 
         if (gameover.pos.y == H/3 && player.pos.y == maxy) {
+        //     // доска очков выезжает
+        //     highscore.pos.x = (W - highscore) /2;
+        //     gameover.pos.y = -gameover.srcRect.h;
+        //     gameover.a.y = 2*GRAVITY;
+        //     entities.push_back(&gameover);
+        // }
             state = DEAD;
+            SDL_Log("DEAD");
         }
         break;
     }
@@ -148,9 +160,11 @@ void Level::handleEvent(SDL_Event event) {
                 entities[i]->v.x = SCROLL_SPEED;
             }
             state = PLAYING;
+            SDL_Log("PLAYING");
             break;
           case DEAD:
             reset();
+            postEvent(TEXTURE_RELOAD, &player);
             break;
         }
     }
@@ -162,9 +176,8 @@ void Level::startDeath() {
         e->v.x = e->v.y = e->a.y = 0;
     }
     // поменять картинку
-    SDL_DestroyTexture(player.texture->sdlTexture);
-    player.texture->sdlTexture = nullptr;
     player.name = "skater_dead";
+    postEvent(TEXTURE_RELOAD, &player);
     
     // если в потолок, падаем
     if (player.pos.y < maxy) {
@@ -179,7 +192,7 @@ void Level::startDeath() {
 }
 
 void Level::respawnColumn(int i){
-    // респауним справа, соблюдая интервал от крайней колонны
+    // респауним колонну справа, соблюдая интервал от крайней колонны
     int j = (numCols + i - 1) % numCols;
     vec2* curPos = &entities[colIndex+i]->pos;
     vec2* prevPos = &entities[colIndex+j]->pos;

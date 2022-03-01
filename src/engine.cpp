@@ -44,13 +44,16 @@ Engine::Engine(int width, int height)
     SDL_Log("Engine init ok");
 }
 
+
+
+
 // загружает текстуру из файла для Entity, или отрисовывает текст 
-// проверяет текстуры в мапе имя -> текстура и добавляет, если  ее там еще нет
 void Engine::loadEntityTexture(Entity* e) {
-    if (e->texture && e->texture->sdlTexture != nullptr) 
-        return;
+    // if (e->texture && e->texture->sdlTexture != nullptr) 
+    //     return;
     if (e->name[0] != TXTMARK[0]){
-        // графическая текстура из файла, 
+        // графическая текстура из файла, кэшируется в мапе "имя -> Texture"
+        SDL_Log("Getting texture: <%s>", e->name);
         if (images.find(e->name) == images.end()) {
             std::string path = IMG_LOCATION;
             path = path + e->name + ".png";
@@ -58,19 +61,23 @@ void Engine::loadEntityTexture(Entity* e) {
             SDL_Texture* sdlTexture;
             if ((sdlTexture = IMG_LoadTexture(renderer, path.c_str())) != NULL) {
                 int w, h;
-                // получить и запомнить размеры текстуры
                 SDL_QueryTexture(sdlTexture, NULL, NULL, &w, &h);
                 images[e->name] = Texture {w, h, sdlTexture};
-                SDL_Log("Texture %s loaded, w=%d, h=%d", path.c_str(), w, h);
+                SDL_Log("Texture <%s> loaded, w=%d, h=%d", path.c_str(), w, h);
             }
+        } else {
+            SDL_Log("Texture <%s> found in cache", e->name);
         }
         e->texture = &images[e->name];
+        SDL_Log("Texture <%s> address: %p sdltexture: %p", e->name, e->texture, e->texture->sdlTexture);
     } else {
-        // отрисовать текст, находящийся в Entity в поле text,
-        // в текстуру
+        // сгенерировать текстуру, отрисовав текст, находящийся в поле text
         SDL_Surface *surface = TTF_RenderText_Solid(font, e->text.c_str(), e->textColor);
         if (e->texture != nullptr) {
-            SDL_DestroyTexture(e->texture->sdlTexture);
+            if (e->texture->sdlTexture != nullptr) {
+                SDL_DestroyTexture(e->texture->sdlTexture);
+                SDL_Log("Destroyed text texture");
+            }
         } else {
             e->texture = new Texture;
         }
@@ -98,8 +105,10 @@ void Engine::draw(Entity* e, vec2 pos){
 // с x-обрезкой по ширине окна. Размеры 0 означают
 // "возьми из srcRect""
 void Engine::draw(Entity* e, int x, int y, int w, int h){
-    if (e->texture == nullptr || e->texture->sdlTexture == nullptr)
+    if (e->texture == nullptr || e->texture->sdlTexture == nullptr) {
+        SDL_Log("Request to draw %s which has no texture", e->name);
         loadEntityTexture(e);
+    }
     int margin = 0;
     SDL_Rect srcRect {e->srcRect};
     if (w==0) w = srcRect.w;

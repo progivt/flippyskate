@@ -5,7 +5,7 @@ int clamp(int x, int min, int max) {
     return x < min ? min : x;
 }
 
-void postEvent(Sint32 code,void* d1, void* d2) {
+void postEvent(Sint32 code, void* d1, void* d2) {
     SDL_Event e;
     e.type = SDL_USEREVENT;
     e.user.code = code;

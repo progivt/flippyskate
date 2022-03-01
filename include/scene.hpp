@@ -7,7 +7,7 @@
 
 #include "entity.hpp"
 
-#define SCORE_UPDATE 10 // Код события, запрашивающего обновление показа очков
+#define TEXTURE_RELOAD 10 // Код события, запрашивающего обновление показа очков
 
 class Scene {
   public:

@@ -15,7 +15,7 @@ Game::Game()
     welcomeScreen.start.pos.x = (WIDTH - welcomeScreen.start.srcRect.w) / 2;
     welcomeScreen.start.pos.y = (HEIGHT - welcomeScreen.start.srcRect.h) / 2;
 
-    highScore = lastScore = 0;
+    highScore = 0;
     level.scorecard.text = "0";
     currentScene = &level;
     loadTextures(currentScene);
@@ -33,17 +33,10 @@ void Game::loadTextures(Scene* scene){
     }
 }
 
-void Game::invalidateScore(){
-    Entity *sc = &level.scorecard;
-    sc->text = std::to_string(level.score);
-    if (sc->texture->sdlTexture != nullptr) {
-        SDL_DestroyTexture(sc->texture->sdlTexture);
-        sc->texture->sdlTexture = nullptr;
-    }
-    engine.loadEntityTexture(sc);
-    sc->pos.x = WIDTH - sc->texture->w - 20;
-    lastScore = level.score;
-}
+// void Game::reposition(){
+// }
+
+
 
 void Game::run(){
     bool exiting = false;
@@ -76,9 +69,10 @@ void Game::run(){
             } else {
                 if (event.type == SDL_USEREVENT) {
                     switch (event.user.code){
-                      case SCORE_UPDATE:
-                        SDL_Log("Score updated: %d", level.score);
-                        invalidateScore();
+                      case TEXTURE_RELOAD:
+                        SDL_Log("Request to reload texture: %s", ((Entity*) event.user.data1)->name);
+                        // invalidateScore();
+                        engine.loadEntityTexture((Entity*) event.user.data1);
                         break;
                     }   
                 } else {
@@ -113,8 +107,10 @@ Game::~Game() {
         for (auto& e: scene->entities)
             if (e->name[0] == TXTMARK[0]) {
                 SDL_Log("Destroying text %s", e->text.c_str());
-                if (e->texture && e->texture->sdlTexture) 
+                if (e->texture && e->texture->sdlTexture) {
                     SDL_DestroyTexture(e->texture->sdlTexture);
+                    SDL_Log("Destroyed text texture for text \"%s\"", e->text.c_str());
+                }
                 delete e->texture;
             }
 }

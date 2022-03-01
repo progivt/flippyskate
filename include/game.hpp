@@ -22,7 +22,7 @@ class Game {
 
   private:
     void update();
-    void invalidateScore();
+    // void invalidateScore();
     void repaint();
   	void loadTextures(Scene *scene);
   	std::ostringstream strScore;
