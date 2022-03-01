@@ -1,6 +1,6 @@
 #include "game.hpp"
 
-#define WIDTH  800
+#define WIDTH  1024
 #define HEIGHT 600
 #define RENDER_QUANTUM 16
 
@@ -93,10 +93,14 @@ void Game::repaint(){
     SDL_RenderClear(rend);
     for (auto scn : std::vector<Scene*> {&welcomeScreen, &level}) {
         for (auto& e : scn->entities) {
-            engine.draw(e);
-            if (e == &currentScene->bg) {
-                engine.draw(e, e->pos + vec2{WIDTH,0});
+            if (e == &currentScene->bg){
+                SDL_Log("delai1");
+                engine.draw(e, (int)e->pos.x, (int)e->pos.y, WIDTH, HEIGHT);
+                SDL_Log("delai2");
+                engine.draw(e, (int)e->pos.x + WIDTH, (int)e->pos.y, WIDTH, HEIGHT);
             }
+            else
+                engine.draw(e);
         }
     }   
     SDL_RenderPresent(rend);

@@ -22,8 +22,8 @@ class Scene {
 class Level : public Scene {
   public:
     Level(int _W, int _H);
-    unsigned state, score;
-    Entity player, scorecard, col1, col2;
+    unsigned state, score, colIndex, numCols;
+    Entity player, scorecard;
     void reset();
     void update(Uint64 dt);
     void handleEvent(SDL_Event e);

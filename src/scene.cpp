@@ -1,11 +1,13 @@
 #include <cstdlib>
+#include <cmath>
 
 #include "scene.hpp"
 
-#define SCROLL_SPEED (-0.15f)
-#define GRAVITY      (0.0007f)
+#define SCROLL_SPEED (-0.19f)
+#define GRAVITY      0.0007f
 #define JUMP_SPEED   (-0.4f)
-#define COLUMN_DIST     (420)
+#define COLUMN_DIST  320
+#define COLUMN_WIDTH 96
 
 Scene::Scene(int _W, int _H) : W{_W}, H{_H} {
     entities.push_back(&bg);
@@ -42,21 +44,34 @@ Level::Level(int _W, int _H) : Scene {_W, _H} {
     bg =        Entity("bg2");
     player =    Entity("skater");
     scorecard = Entity("*");
-    col1 =      Entity("col", {(float)W,0});
-    col2 =      Entity("col", {(float)W,0});
-    entities = std::vector<Entity *> {&bg, &player, &scorecard, &col1, &col2};
-    scorecard.textColor = SDL_Color {255, 255, 255, 0};
+    entities = std::vector<Entity *> {&bg, &player, &scorecard};
+    colIndex = entities.size();
+    numCols = ceil(W / (float)COLUMN_DIST);
+    for (int i=0; i<numCols; i++){
+        Entity* column = new Entity("col");
+        entities.push_back(column);
+    }
     reset();
     SDL_Log("Main level init ok");
 }
 
 void Level::reset() {
     score = 0;
+    
     bg.pos = {0,0};   bg.v = {SCROLL_SPEED,0};
-    player.pos = {100,100}; player.v = {0,0}; player.a = {0,0} ;
+    
+    player.pos = {100,100}; 
+    player.v = {0,0}; 
+    player.a = {0,0} ;
+    
+    scorecard.textColor = SDL_Color {255, 255, 255, 0};
     scorecard.text = "0";
-    scorecard.pos = {(float)W,20};
-    entities = std::vector<Entity *> {&bg, &player, &scorecard};
+    scorecard.pos = {(float)W, 20};
+    
+    for (int i=0; i<numCols; i++){
+        entities[colIndex+i]->pos = { (float)W + i * COLUMN_DIST, -20 - (float) (300.0f*rand())/RAND_MAX};
+        SDL_Log("Column created X=%f, Y=%f", entities[colIndex+i]->pos.x, entities[colIndex+i]->pos.y);
+    }
     state = INTRO;
 }
 
@@ -78,15 +93,13 @@ void Level::update(Uint64 dt){
         player.name = "skater_dead";
     }
 
-    if (col1.pos.x < -col1.srcRect.w) {
-        col1.pos.x = col2.pos.x + COLUMN_DIST;
-        col1.pos.y = clamp(col2.pos.y  + 70 - (140.*rand()/RAND_MAX), -320, 0);
-    } 
-
-    if (col2.pos.x < -col2.srcRect.w) {
-        col2.pos.x = col1.pos.x + COLUMN_DIST;
-        col2.pos.y = clamp(col1.pos.y  + 70 - (140.*rand()/RAND_MAX), -320, 0);
-    } 
+    for (int i = colIndex; i < colIndex + numCols; i++) {
+        int prev = colIndex + (numCols + i - colIndex - 1) % numCols;
+        if (entities[i]->pos.x < -COLUMN_WIDTH) {
+            entities[i]->pos.x = entities[prev]->pos.x + COLUMN_DIST;
+            entities[i]->pos.y = clamp(entities[prev]->pos.y  + 70 - (140.*rand()/RAND_MAX), -320, 0);
+        }
+    }
 }
 
 void Level::handleEvent(SDL_Event event) {
@@ -101,12 +114,12 @@ void Level::handleEvent(SDL_Event event) {
             player.v.y = JUMP_SPEED;
             break;
           case INTRO:
+            // Поехали!
             player.v.y = -0.05;
             player.a.y = GRAVITY;
-            col1.pos = {(float)W, (float)-H/3};
-            col2.pos = {(float)W + COLUMN_DIST, (float)-H/5};
-            col1.v = col2.v = {SCROLL_SPEED,0};
-            entities = std::vector<Entity *> {&bg, &player, &scorecard, &col1, &col2};
+            for (int i = colIndex; i < colIndex+numCols; i++){
+                entities[i]->v.x = SCROLL_SPEED;
+            }
             state = PLAYING;
             break;
         }
