@@ -85,27 +85,37 @@ void Engine::draw(Entity* e){
     draw(e, e->pos);
 }
 
-// рисует Entity в заданном месте
-// с x-обрезкой по ширине окна
+// рисует Entity в заданной позиции в масштабе 1:1
 void Engine::draw(Entity* e, vec2 pos){
-    if (e->texture.sdlTexture == nullptr) {
-        loadEntityTexture(e);   
-    }
+    draw(e, pos.x, pos.y, 0, 0);
+}
+
+// рисует Entity растягивая на заданный прямоугольник
+// с x-обрезкой по ширине окна. Размеры 0 означают
+// "возьми из исходника""
+void Engine::draw(Entity* e, int x, int y, int w, int h){
+    int margin = 0;
     SDL_Rect srcRect {e->srcRect};
-    SDL_Rect dstRect {(int)pos.x, (int)pos.y, srcRect.w, srcRect.h};
-    int margin;
-    if ((margin = dstRect.x + dstRect.w - W) > 0) {
-        dstRect.w -= margin;
-        srcRect.w -= margin;
+    if (w==0) w = srcRect.w;
+    if (h==0) h = srcRect.h;
+    float xratio = (w > 0) ? 1.*srcRect.w/w : 1, 
+          yratio = (h > 0) ? 1.*srcRect.h/h : 1;
+    if ((margin = x + w - W) > 0) {
+        w -= margin;
+        srcRect.w -= xratio * margin;
     } 
-    if ((margin = -dstRect.x) > 0) {
-        dstRect.x = 0;
-        dstRect.w -= margin;
-        srcRect.x += margin;
-        srcRect.w -= margin;
+    if ((margin = -x) > 0) {
+        x = 0;
+        w -= margin;
+        srcRect.x += xratio * margin;
+        srcRect.w -= xratio * margin;
     }
-    if (srcRect.w > 0)
+    if (srcRect.w > 0) {
+        if (e->texture.sdlTexture == nullptr)
+            loadEntityTexture(e);
+        SDL_Rect dstRect {x, y, w, h};
         SDL_RenderCopy(renderer, e->texture.sdlTexture, &srcRect, &dstRect);
+    }
 }
 
 Engine::~Engine() {

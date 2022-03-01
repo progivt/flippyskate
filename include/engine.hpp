@@ -21,6 +21,7 @@ class Engine {
     void loadEntityTexture(Entity* e);
     void draw(Entity* e);
     void draw(Entity* e, vec2 pos);
+    void draw(Entity* e, int x, int y, int w, int h);
 
   private:
     int W, H;

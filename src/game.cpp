@@ -26,9 +26,8 @@ Game::Game()
 }
 
 void Game::loadTextures(Scene* scene){
-	for (auto& e : currentScene -> entities) {
+	for (auto& e : currentScene -> entities)
 		engine.loadEntityTexture(e);
-	}
 }
 
 void Game::invalidateScore(){
@@ -89,21 +88,16 @@ void Game::repaint(){
     level.score++;
     invalidateScore();
 
-    SDL_Renderer* rend = engine.renderer;
-    SDL_RenderClear(rend);
-    for (auto scn : std::vector<Scene*> {&welcomeScreen, &level}) {
-        for (auto& e : scn->entities) {
-            if (e == &currentScene->bg){
-                SDL_Log("delai1");
-                engine.draw(e, (int)e->pos.x, (int)e->pos.y, WIDTH, HEIGHT);
-                SDL_Log("delai2");
-                engine.draw(e, (int)e->pos.x + WIDTH, (int)e->pos.y, WIDTH, HEIGHT);
-            }
-            else
-                engine.draw(e);
+    SDL_RenderClear(engine.renderer);
+    for (auto& e : currentScene->entities) {
+        if (e != &currentScene->bg){
+            engine.draw(e);
+        } else {
+            engine.draw(e, (int)e->pos.x, (int)e->pos.y, WIDTH, HEIGHT);
+            engine.draw(e, (int)e->pos.x + WIDTH, (int)e->pos.y, WIDTH, HEIGHT);
         }
     }   
-    SDL_RenderPresent(rend);
+    SDL_RenderPresent(engine.renderer);
 }
 
 int main(){
