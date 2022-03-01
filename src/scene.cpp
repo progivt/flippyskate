@@ -42,19 +42,16 @@ void WelcomeScreen::handleEvent(SDL_Event e){}
 ////////////////////////////////////////////////////////////////////////////////
 Level::Level(int _W, int _H) : Scene {_W, _H} {
     bg = Entity("bg2");
-    player = Entity("skater");
+    player = Entity("skater"); 
     entities = std::vector<Entity *> {&bg, &player};
-    
     colIndex = entities.size();
     numCols = ceil(W / (float)COLUMN_DIST);
     for (int i=0; i<numCols; i++){
         Entity* column = new Entity("col");
         entities.push_back(column);
     }
-    
     scorecard = Entity(TXTMARK);
     entities.push_back(&scorecard);
-    
     gameover = Entity("gameover");
 
     reset();
@@ -67,6 +64,7 @@ void Level::reset() {
     
     bg.pos = {0,0};   bg.v = {SCROLL_SPEED,0};
     
+    player.name = "skater";
     player.pos = {100,100}; 
     player.v = {0,0}; 
     player.a = {0,0} ;
@@ -82,7 +80,7 @@ void Level::reset() {
         SDL_Log("Column created X=%f, Y=%f", entities[colIndex+i]->pos.x, entities[colIndex+i]->pos.y);
     }
     nextColumn = 0;
-    
+
     state = INTRO;
 }
 
@@ -93,12 +91,12 @@ void Level::update(Uint64 dt){
       case PLAYING:
         if (player.pos.y < miny || player.pos.y > maxy) {
             startDeath();
-            state = DEAD;
+            state = DYING;
         } else {
             // прошли ли очередную колонну?
             if (player.pos.x > entities[colIndex+nextColumn]->pos.x + COLUMN_WIDTH / 2) 
             {
-                score++; 
+                score++;
                 nextColumn = (nextColumn+1) % numCols;
                 postEvent(SCORE_UPDATE);
             }
@@ -110,18 +108,19 @@ void Level::update(Uint64 dt){
             }
         }
         break;
-      case DEAD:
+      case DYING:
         // останавливаем пике персонажа и надписей, если долетели
-        SDL_Log("gamoverpos = %f %f %d ", gameover.pos.x, gameover.pos.y, gameover.texture.sdlTexture == nullptr);
-
-        gameover.pos.y = clamp(gameover.pos.y, 0, (H - gameover.srcRect.h)/2);
-        if (gameover.pos.y == H - gameover.srcRect.h)
+        gameover.pos.y = clamp(gameover.pos.y, 0, H/3);
+        if (gameover.pos.y == H/3)
             gameover.v.y = gameover.a.y = 0;
         
         player.pos.y = clamp(player.pos.y, 0, maxy);
         if (player.pos.y == maxy) 
             player.v.y = player.a.y = 0;
 
+        if (gameover.pos.y == H/3 && player.pos.y == maxy) {
+            state = DEAD;
+        }
         break;
     }
 }
@@ -133,9 +132,9 @@ void Level::handleEvent(SDL_Event event) {
             event.key.keysym.sym == SDLK_UP    || 
             event.key.keysym.sym == SDLK_w)
         ) {
-        // прыжок!
         switch (state){
           case PLAYING: 
+            // прыжок!
             player.v.y = JUMP_SPEED;
             break;
           case INTRO:
@@ -149,6 +148,9 @@ void Level::handleEvent(SDL_Event event) {
                 entities[i]->v.x = SCROLL_SPEED;
             }
             state = PLAYING;
+            break;
+          case DEAD:
+            reset();
             break;
         }
     }

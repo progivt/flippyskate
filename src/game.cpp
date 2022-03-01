@@ -94,7 +94,6 @@ void Game::run(){
 
 void Game::repaint(){
     SDL_RenderClear(engine.renderer);
-    SDL_Log("Drawing %lu entities", currentScene->entities.size());
     for (auto& e : currentScene->entities) {
         if (e != &currentScene->bg){
             engine.draw(e);

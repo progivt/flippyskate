@@ -21,6 +21,4 @@ class Entity {
     Texture texture;
     std::string text;
     SDL_Color textColor {0, 0, 0, 0};
-  private:
-    SDL_Renderer* renderer;
 };

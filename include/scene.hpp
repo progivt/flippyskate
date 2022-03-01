@@ -31,7 +31,8 @@ class Level : public Scene {
     void handleEvent(SDL_Event e);
     static const int INTRO   = 0;
     static const int PLAYING = 1;
-    static const int DEAD    = 2;
+    static const int DYING   = 2;
+    static const int DEAD    = 3;
   private:
     int maxy, miny;
     void startDeath();
