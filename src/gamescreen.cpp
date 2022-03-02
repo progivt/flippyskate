@@ -1,7 +1,7 @@
 #include "gamescreen.hpp"
 
 #define SCROLL_SPEED (-0.29f)
-#define GRAVITY      0.0008f
+#define GRAVITY      0.001f
 #define JUMP_SPEED   (-0.3f)
 #define COLUMN_DIST  320
 #define COLUMN_WIDTH 96
@@ -123,8 +123,8 @@ void GameScreen::update(Uint64 dt){
             for (int i=ovrl0; i<entities.size(); i++) {
                 entities[i]->v = entities[i]->a = {0, 0};
             }
-            yourscore->pos = finalbox->pos + vec2{145, 65};
-            highscore->pos = finalbox->pos + vec2{145, 110};
+            yourscore->pos = finalbox->pos + vec2{141, 65};
+            highscore->pos = finalbox->pos + vec2{141, 110};
             medal->pos = finalbox->pos + vec2{40, 61};
             state = RESULTS;
             // SDL_Log("RESULTS");
@@ -215,12 +215,12 @@ void GameScreen::overlayReset(){
     engine->setFontSize(28);
     
     yourscore->text += std::to_string(score);
-    yourscore->pos = finalbox->pos + vec2{145, 65};
+    yourscore->pos = finalbox->pos + vec2{141, 65};
     yourscore->v = yourscore->a = {0,0}; 
     engine->loadEntityTexture(yourscore);
 
     highscore->text += std::to_string(maxScore);
-    highscore->pos = finalbox->pos + vec2{145, 110};
+    highscore->pos = finalbox->pos + vec2{141, 110};
     highscore->v = yourscore->a = {0,0}; 
     engine->loadEntityTexture(highscore);
 
