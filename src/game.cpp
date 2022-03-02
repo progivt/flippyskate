@@ -84,20 +84,6 @@ void Game::repaint(){
     SDL_RenderPresent(engine.renderer);
 }
 
-Game::~Game() {
-    // почистить динамические текстуры для текста
-    for (auto& scene : scenes)
-        for (auto& e: scene->entities)
-            if (e->name[0] == TXTMARK[0]) {
-                SDL_Log("Destroying text %s", e->text.c_str());
-                if (e->texture && e->texture->sdlTexture) {
-                    SDL_DestroyTexture(e->texture->sdlTexture);
-                    SDL_Log("Destroyed text texture for text \"%s\"", e->text.c_str());
-                }
-                delete e->texture;
-            }
-}
-
 int main(){
     Game game;
     game.run();

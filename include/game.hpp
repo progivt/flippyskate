@@ -19,7 +19,6 @@ class Game {
     unsigned 	highScore;
 
     Game();
-    ~Game();
     void run();
 
   private:

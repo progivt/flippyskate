@@ -12,6 +12,7 @@ class Engine;
 class Scene {
   public:
     Scene(Engine* _engine, std::vector<const char*> entitynames);
+    ~Scene();
     int W, H;
     // объекты сцены, первый всегда фон
     std::vector<Entity*> entities;
@@ -19,7 +20,6 @@ class Scene {
     virtual void update(Uint64 dt);
     virtual void handleEvent(SDL_Event e) = 0;
     void createEntities(const std::vector<const char*>& entitynames);
-    void (*loaderCallback)(Scene *) {nullptr};
     void loadTextures();
     Engine* engine;
 };
