@@ -14,6 +14,10 @@ void StartScreen::reset(){
                   (H - label->srcRect.h) / 2.f};
 }
 
-void StartScreen::handleEvent(SDL_Event e){}
+void StartScreen::handleEvent(SDL_Event e){
+    if (e.type == SDL_MOUSEBUTTONUP || 
+        e.type == SDL_KEYUP)
+        postEvent(GO_PLAY); 
+}
 
 

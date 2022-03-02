@@ -43,10 +43,21 @@ void Game::run(){
 
         SDL_Event event;
         while (SDL_PollEvent(&event)) {
-            if (event.type == SDL_QUIT) {
+            switch (event.type) {
+              case SDL_QUIT:
                 exiting = true;
                 break;
-            } else {
+              case SDL_USEREVENT: 
+                if (event.user.code == GO_PLAY) {
+                    currentScene = &gameScreen;
+                    currentScene->reset();
+                }
+                if (event.user.code == GO_START) {
+                    currentScene = &startScreen;
+                    currentScene->reset();
+                } 
+                break;
+              default:
                 currentScene -> handleEvent(event);
             }
         }

@@ -57,6 +57,8 @@ void GameScreen::reset() {
         SDL_Log("Column placed X=%f, Y=%f", 
                 entities[col0+i]->pos.x, entities[col0+i]->pos.y);
     }
+    maxy = H - player->srcRect.h - 2; 
+    miny = 2;
     nextColumn = 0;
     state = INTRO;
 }
@@ -111,8 +113,8 @@ void GameScreen::update(Uint64 dt){
             for (int i=ovrl0; i<entities.size(); i++) {
                 entities[i]->v = entities[i]->a = {0, 0};
             }
-            yourscore->pos = finalbox->pos + vec2{145, 67};
-            highscore->pos = finalbox->pos + vec2{145, 117};
+            yourscore->pos = finalbox->pos + vec2{145, 65};
+            highscore->pos = finalbox->pos + vec2{145, 110};
             medal->pos = finalbox->pos + vec2{40, 61};
             state = DEAD;
             SDL_Log("DEAD");
@@ -135,9 +137,6 @@ void GameScreen::handleEvent(SDL_Event event) {
             break;
           case INTRO:
             // Поехали!
-            maxy = H - player->srcRect.h - 2; 
-            miny = 2;
-            scorecard->pos.x = W - scorecard->srcRect.w - 20;
             player->v.y = -0.05;
             player->a.y = GRAVITY;
             for (int i = col0; i < col0+nCols; i++){
@@ -153,6 +152,8 @@ void GameScreen::handleEvent(SDL_Event event) {
             break;
         }
     }
+    if (event.type == SDL_KEYUP && event.key.keysym.sym == SDLK_ESCAPE && state == DEAD)
+        postEvent(GO_START);
 }
 
 void GameScreen::startDeath() {
@@ -190,12 +191,12 @@ void GameScreen::overlayReset(){
     engine->setFontSize(28);
     
     yourscore->text += std::to_string(score);
-    yourscore->pos = finalbox->pos + vec2{145, 67};
+    yourscore->pos = finalbox->pos + vec2{145, 65};
     yourscore->v = yourscore->a = {0,0}; 
     engine->loadEntityTexture(yourscore);
 
     highscore->text += std::to_string(maxScore);
-    highscore->pos = finalbox->pos + vec2{145, 117};
+    highscore->pos = finalbox->pos + vec2{145, 110};
     highscore->v = yourscore->a = {0,0}; 
     engine->loadEntityTexture(highscore);
 
