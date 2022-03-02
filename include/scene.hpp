@@ -3,7 +3,6 @@
 #include <vector>
 
 #include <SDL2/SDL.h>
-#include <SDL2_image/SDL_image.h>
 
 #include "entity.hpp"
 #include "engine.hpp"
@@ -25,12 +24,3 @@ class Scene {
     Engine* engine;
 };
 
-// начальный экран
-class WelcomeScreen : public Scene {
-  public:
-    WelcomeScreen(Engine* _engine);
-    Entity start;
-    void reset();
-    void update(Uint64 dt);
-    void handleEvent(SDL_Event e);     
-};

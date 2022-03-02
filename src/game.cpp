@@ -7,13 +7,13 @@
 Game::Game() 
   : engine { Engine(WIDTH, HEIGHT) },
     gameScreen { GameScreen(&engine) },
-    welcomeScreen { WelcomeScreen (&engine) } {
+    startScreen { StartScreen (&engine) } {
         
-    scenes = std::vector<Scene *> {&welcomeScreen, &gameScreen};
+    scenes = std::vector<Scene *> {&startScreen, &gameScreen};
     
-    welcomeScreen.start.textColor = SDL_Color {255,255,255,0};
-    welcomeScreen.start.pos.x = (WIDTH  - welcomeScreen.start.srcRect.w) / 2;
-    welcomeScreen.start.pos.y = (HEIGHT - welcomeScreen.start.srcRect.h) / 2;
+    startScreen.start.textColor = SDL_Color {255,255,255,0};
+    startScreen.start.pos.x = (WIDTH  - startScreen.start.srcRect.w) / 2;
+    startScreen.start.pos.y = (HEIGHT - startScreen.start.srcRect.h) / 2;
 
     highScore = 0;
     gameScreen.scorecard->text = "0";

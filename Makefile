@@ -1,6 +1,7 @@
 OBJS = \
   build/game.o \
   build/engine.o \
+  build/startscreen.o \
   build/gamescreen.o \
   build/scene.o \
   build/entity.o \
@@ -25,6 +26,7 @@ build/%.o: %.cpp
 
 build/game.o: game.hpp gamescreen.o scene.o engine.o entity.o util.o
 build/engine.o: engine.hpp entity.o util.o
+build/startscreen.o: startscreen.hpp scene.o entity.o util.o
 build/gamescreen.o: gamescreen.hpp scene.o entity.o util.o
 build/scene.o: scene.hpp entity.o util.o
 build/entity.o: entity.hpp util.o

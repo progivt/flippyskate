@@ -6,11 +6,12 @@
 #include "engine.hpp"
 #include "scene.hpp"
 #include "gamescreen.hpp"
+#include "startscreen.hpp"
 
 class Game {
   public:
     Engine 		engine;
-    WelcomeScreen welcomeScreen;
+    StartScreen startScreen;
     GameScreen gameScreen;
   	std::vector<Scene *> scenes;
     Scene*		currentScene;
