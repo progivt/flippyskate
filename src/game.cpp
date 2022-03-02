@@ -64,11 +64,9 @@ void Game::run(){
             }
         }
     }
-    std::cout << ticks << " ticks and "
-      << frames << " frames in " 
-      << lastTime << "ms, @" 
-      << 1000.0 * ticks / lastTime << " ticks per sec, " 
-      << 1000.0 * frames / lastTime << " fps\n";
+    SDL_Log("Stats: %llu ticks and %llu frames in %llums @%f ticks per sec, %f fps", 
+           ticks, frames, lastTime, 
+           1000.0 * ticks / lastTime, 1000.0 * frames / lastTime);
 }
 
 void Game::repaint(){
