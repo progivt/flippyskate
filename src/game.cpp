@@ -8,33 +8,24 @@ Game::Game()
   : engine { Engine(WIDTH, HEIGHT) },
     gameScreen { GameScreen(&engine) },
     startScreen { StartScreen (&engine) } {
-        
     scenes = std::vector<Scene *> {&startScreen, &gameScreen};
-    
-    startScreen.start.textColor = SDL_Color {255,255,255,0};
-    startScreen.start.pos.x = (WIDTH  - startScreen.start.srcRect.w) / 2;
-    startScreen.start.pos.y = (HEIGHT - startScreen.start.srcRect.h) / 2;
-
-    highScore = 0;
-    gameScreen.scorecard->text = "0";
-    currentScene = &gameScreen;
-    
-    repaint();
-    ticks = 0; 
-    frames = 1;
+    currentScene = &startScreen;
+    frames = ticks = 0; 
     lastDrawTime = lastTime = SDL_GetTicks64();
     SDL_Log("Game init ok");
 }
-
 
 void Game::run(){
     bool exiting = false;
     SDL_Log("Game running");
     repaint();
+    frames++;
     while (!exiting) {
 	    Uint64 t = SDL_GetTicks64();
 	    Uint64 dt = t - lastTime;
-        if (dt < RENDER_QUANTUM/2) {
+
+        // по два update на repaint
+        if (dt < RENDER_QUANTUM / 2) {
             SDL_Delay(RENDER_QUANTUM/2 - dt);
             t = SDL_GetTicks64();
             dt = t - lastTime;
@@ -56,11 +47,7 @@ void Game::run(){
                 exiting = true;
                 break;
             } else {
-                if (event.type == SDL_USEREVENT) {
-                    ;
-                } else {
-                    currentScene -> handleEvent(event);
-                }
+                currentScene -> handleEvent(event);
             }
         }
     }
