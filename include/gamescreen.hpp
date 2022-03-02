@@ -13,13 +13,13 @@ class GameScreen : public Scene {
     void handleEvent(SDL_Event e);
     static const int INTRO   = 0;
     static const int PLAYING = 1;
-    static const int DYING   = 2;
-    static const int DEAD    = 3;
+    static const int LOST    = 2;
+    static const int RESULTS = 3;
   private:
     int maxy, miny;
     void displayOverlays(bool show);
     void overlayReset();
-    void startDeath();
+    void lose();
     void respawnColumn(int i);
     bool isColliding();
 };

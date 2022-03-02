@@ -12,7 +12,7 @@ ScoresScreen::ScoresScreen (Engine* _engine)
 {
     header = entities[1];
     reset();
-    SDL_Log("Start screen init ok");
+    // SDL_Log("Start screen init ok");
 }
 
 void ScoresScreen::reset(){

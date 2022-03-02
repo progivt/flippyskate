@@ -14,12 +14,12 @@ Game::Game()
     frames = ticks = 0; 
     lastDrawTime = lastTime = SDL_GetTicks64();
     gameScreen.maxScore = 0;
-    SDL_Log("Game init ok");
+    // SDL_Log("Game init ok");
 }
 
 void Game::run(){
     bool exiting = false;
-    SDL_Log("Game running");
+    // SDL_Log("Game running");
     repaint();
     frames++;
     while (!exiting) {

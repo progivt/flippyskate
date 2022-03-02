@@ -52,7 +52,7 @@ void Engine::setFontSize(int size){
 void Engine::loadEntityTexture(Entity* e) {
     if (e->name[0] != TXTMARK[0]){
         // графическая текстура из файла, кэшируется в мапе "имя -> Texture"
-        SDL_Log("Getting texture: <%s>", e->name);
+        // SDL_Log("Getting texture: <%s>", e->name);
         if (images.find(e->name) == images.end()) {
             std::string path = IMG_LOCATION;
             path = path + e->name + ".png";
@@ -62,10 +62,10 @@ void Engine::loadEntityTexture(Entity* e) {
                 int w, h;
                 SDL_QueryTexture(sdlTexture, NULL, NULL, &w, &h);
                 images[e->name] = Texture {w, h, sdlTexture};
-                // SDL_Log("  Texture <%s> loaded from %s, w=%d, h=%d", e->name, path.c_str(), w, h);
+                // // SDL_Log("  Texture <%s> loaded from %s, w=%d, h=%d", e->name, path.c_str(), w, h);
             }
         } else {
-            // SDL_Log("  Texture <%s> found in cache", e->name);
+            // // SDL_Log("  Texture <%s> found in cache", e->name);
         }
         e->texture = &images[e->name];
     } else {
@@ -74,7 +74,7 @@ void Engine::loadEntityTexture(Entity* e) {
         if (e->texture != nullptr) {
             if (e->texture->sdlTexture != nullptr) {
                 SDL_DestroyTexture(e->texture->sdlTexture);
-                // SDL_Log("Destroyed text texture");
+                // // SDL_Log("Destroyed text texture");
             }
         } else {
             e->texture = new Texture;
@@ -83,7 +83,7 @@ void Engine::loadEntityTexture(Entity* e) {
         e->texture->h = surface->h;
         e->texture->sdlTexture = SDL_CreateTextureFromSurface(renderer, surface);
         SDL_FreeSurface(surface);
-        SDL_Log("Text \"%s\" rendered", e->text.c_str());
+        // SDL_Log("Text \"%s\" rendered", e->text.c_str());
     }
     e->srcRect.w = e->texture->w;
     e->srcRect.h = e->texture->h;
@@ -108,7 +108,7 @@ void Engine::draw(Entity* e, int x, int y, int w, int h){
         strcmp(e->name, "medal")==0)
 
     if (e->texture == nullptr || e->texture->sdlTexture == nullptr) {
-        SDL_Log("Request to draw %s which has no texture", e->name);
+        // SDL_Log("Request to draw %s which has no texture", e->name);
         loadEntityTexture(e);
     }
     int margin = 0;
@@ -136,7 +136,7 @@ void Engine::draw(Entity* e, int x, int y, int w, int h){
 Engine::~Engine() {
     // почистить текстуры для картинок
     for (auto& [name, Texture] : images) {
-        SDL_Log("Destroying texture %s", name);
+        // SDL_Log("Destroying texture %s", name);
         SDL_DestroyTexture(Texture.sdlTexture);
     }
     IMG_Quit();

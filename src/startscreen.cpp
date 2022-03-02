@@ -4,7 +4,7 @@ StartScreen::StartScreen (Engine* _engine)
   : 
   Scene {_engine, {"bg1", "skaterbtn", "scoresbtn"}} {
     reset();
-    SDL_Log("Start screen init ok");
+    // SDL_Log("Start screen init ok");
 }
 
 void StartScreen::update(Uint64 dt){}

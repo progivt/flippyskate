@@ -30,7 +30,7 @@ GameScreen::GameScreen(Engine* _engine)
     medal     = entities[ovrl0+4];
     
     reset();
-    SDL_Log("Main level init ok");
+    // SDL_Log("Main level init ok");
 }
 
 void GameScreen::reset() {
@@ -53,8 +53,8 @@ void GameScreen::reset() {
     for (int i=0; i<nCols; i++){
         entities[col0+i]->pos = { (float)W + i * COLUMN_DIST, 
             -20 - (300.0f * rand())/RAND_MAX};
-        SDL_Log("Column placed X=%f, Y=%f", 
-                entities[col0+i]->pos.x, entities[col0+i]->pos.y);
+        // SDL_Log("Column placed X=%f, Y=%f", 
+        //         entities[col0+i]->pos.x, entities[col0+i]->pos.y);
     }
     maxy = H - player->srcRect.h - 2; 
     miny = 2;
@@ -68,20 +68,20 @@ void GameScreen::update(Uint64 dt){
     switch (state) {
       case PLAYING:
         if (player->pos.y < miny || player->pos.y > maxy || isColliding()) {
-            startDeath();
-            state = DYING;
+            lose();
+            state = LOST;
             postEvent(UPD_SCORES, &score);
             if (score > maxScore){
                 maxScore = score;
-                SDL_Log("Set hiscore to %d", maxScore);
+                // SDL_Log("Set hiscore to %d", maxScore);
             }
-            SDL_Log("DYING");
+            // SDL_Log("LOST");
         } else {
             // прошли ли очередную колонну?
             if (player->pos.x > entities[col0+nextColumn]->pos.x + COLUMN_WIDTH / 2) 
             {
                 score++;
-                SDL_Log("Score: %d", score);
+                // SDL_Log("Score: %d", score);
                 scorecard->text = std::to_string(score);
                 nextColumn = (nextColumn+1) % nCols;
                 engine->loadEntityTexture(scorecard);
@@ -95,7 +95,7 @@ void GameScreen::update(Uint64 dt){
             }
         }
         break;
-      case DYING:
+      case LOST:
         // останавливаем пике персонажа и надписей, если долетели
         gameover->pos.y = clamp(gameover->pos.y, 0, H/5);
         if (gameover->pos.y == H/5)
@@ -120,8 +120,8 @@ void GameScreen::update(Uint64 dt){
             yourscore->pos = finalbox->pos + vec2{145, 65};
             highscore->pos = finalbox->pos + vec2{145, 110};
             medal->pos = finalbox->pos + vec2{40, 61};
-            state = DEAD;
-            SDL_Log("DEAD");
+            state = RESULTS;
+            // SDL_Log("RESULTS");
         }
         break;
     }
@@ -147,14 +147,14 @@ void GameScreen::handleEvent(SDL_Event event) {
                 entities[i]->v.x = SCROLL_SPEED;
             }
             state = PLAYING;
-            SDL_Log("PLAYING");
+            // SDL_Log("PLAYING");
             break;
-          case DEAD:
+          case RESULTS:
             reset();
             break;
         }
     }
-    if (event.type == SDL_KEYUP && event.key.keysym.sym == SDLK_ESCAPE && state == DEAD)
+    if (event.type == SDL_KEYUP && event.key.keysym.sym == SDLK_ESCAPE && state == RESULTS)
         postEvent(GO_START);
 }
 
@@ -173,7 +173,7 @@ bool GameScreen::isColliding(){
     return false;
 }
 
-void GameScreen::startDeath() {
+void GameScreen::lose() {
     for (auto& e: entities) {
         e->v.x = e->v.y = e->a.y = 0;
     }
@@ -198,7 +198,7 @@ void GameScreen::displayOverlays(bool show){
 
 // расположить выезжающие элементы проигрыша
 void GameScreen::overlayReset(){
-    SDL_Log("Hiscore is %d", maxScore);
+    // SDL_Log("Hiscore is %d", maxScore);
     gameover->pos = {(W - gameover->srcRect.w)/2.f, (float)-gameover->srcRect.h};
     gameover->v = {0,0}; 
     gameover->a.y = 2*GRAVITY;
