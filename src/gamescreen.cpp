@@ -35,7 +35,6 @@ GameScreen::GameScreen(Engine* _engine)
 
 void GameScreen::reset() {
     displayOverlays(false);
-    engine->setFontSize();
 
     score = 0;
     scorecard->text = "0"; 
@@ -217,6 +216,8 @@ void GameScreen::overlayReset(){
     highscore->pos = finalbox->pos + vec2{145, 110};
     highscore->v = yourscore->a = {0,0}; 
     engine->loadEntityTexture(highscore);
+
+    engine->setFontSize();
 
     medal->pos = finalbox->pos + vec2{40, 61};
     medal->v = medal->a = {0,0}; 

@@ -23,4 +23,5 @@ struct Texture {
 
 int clamp(int x, int min, int max);
 
+// посылка события SDL для общения Scene с Game
 void postEvent(Sint32 code, void* d1=NULL, void* d2=NULL);

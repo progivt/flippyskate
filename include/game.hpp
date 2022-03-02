@@ -1,8 +1,6 @@
 // всеведущий мегакласс
 #pragma once
 
-#include <sstream>
-
 #include "engine.hpp"
 #include "scene.hpp"
 #include "gamescreen.hpp"
@@ -11,14 +9,14 @@
 
 class Game {
   public:
-    Engine 		engine;
+    Engine    engine;
     StartScreen startScreen;
     ScoresScreen scoresScreen;
     GameScreen gameScreen;
-  	std::vector<Scene *> scenes;
-    Scene*		currentScene;
-    Uint64		lastTime, lastDrawTime, ticks, frames;
-    unsigned 	highScore;
+    std::vector<Scene *> scenes;
+    Scene*    currentScene;
+    Uint64    lastTime, lastDrawTime, ticks, frames;
+    unsigned  highScore;
 
     Game();
     void run();
@@ -27,7 +25,5 @@ class Game {
     void update();
     void invalidateScore();
     void repaint();
-  	std::ostringstream strScore;
-  	unsigned lastScore;
+    unsigned lastScore;
 };
-        
