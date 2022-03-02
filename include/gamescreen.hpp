@@ -2,13 +2,12 @@
 #pragma once
 #include "scene.hpp"
 
-#define TEXTURE_RELOAD 10 // Код события, запрашивающего обновление показа очков
-
 class GameScreen : public Scene {
   public:
     GameScreen(Engine* _engine);
-    unsigned state, score, maxScore, col0, nCols, nextColumn;
-    Entity *bg, *player, *scorecard, *gameover, *finalbox, *yourscore, *highscore;
+    unsigned state, score, maxScore, col0, nCols, ovrl0, nextColumn;
+    Entity *bg, *player, *scorecard, *gameover, *finalbox, *yourscore, 
+           *highscore, *medal;
     void reset();
     void update(Uint64 dt);
     void handleEvent(SDL_Event e);

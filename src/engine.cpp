@@ -104,6 +104,9 @@ void Engine::draw(Entity* e, vec2 pos){
 // "возьми из srcRect""
 void Engine::draw(Entity* e, int x, int y, int w, int h){
     if (!e->visible) return;
+    if (strcmp(e->name, "finalbox")==0 || 
+        strcmp(e->name, "medal")==0)
+
     if (e->texture == nullptr || e->texture->sdlTexture == nullptr) {
         SDL_Log("Request to draw %s which has no texture", e->name);
         loadEntityTexture(e);

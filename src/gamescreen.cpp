@@ -1,28 +1,34 @@
 #include "gamescreen.hpp"
 
 #define SCROLL_SPEED (-0.29f)
-#define GRAVITY      0.0007f
+#define GRAVITY      0.0008f
 #define JUMP_SPEED   (-0.4f)
 #define COLUMN_DIST  320
 #define COLUMN_WIDTH 96
 
 GameScreen::GameScreen(Engine* _engine) 
-  : Scene {_engine, {"bg2", "skater"}} {
-    // моар колонн
+  : Scene {_engine, {"bg2"}} {
+    bg = entities[0];
+
+    // колонны
     col0 = entities.size();
     nCols = ceil(W / (float)COLUMN_DIST);
     for (int i = 0; i < nCols; i++){
         entities.push_back(new Entity{"col"});
     }
-    createEntities({ TXTMARK "0", "gameover", "finalbox", 
-                     TXTMARK "Yours:", TXTMARK "High:"});
-    bg     =    entities[0];
-    player =    entities[1]; 
-    scorecard = entities[col0+nCols]; 
-    gameover  = entities[col0+nCols+1]; 
-    finalbox  = entities[col0+nCols+2];
-    yourscore = entities[col0+nCols+3];
-    highscore = entities[col0+nCols+4];
+    
+    createEntities({"player", TXTMARK});
+    player    = entities[col0+nCols]; 
+    scorecard = entities[col0+nCols+1];
+    
+    ovrl0 = entities.size(); 
+    createEntities({"gameover", "finalbox", TXTMARK, TXTMARK, "medal"});
+    gameover  = entities[ovrl0]; 
+    finalbox  = entities[ovrl0+1];
+    yourscore = entities[ovrl0+2];
+    highscore = entities[ovrl0+3];
+    medal     = entities[ovrl0+4];
+    
     maxScore = 0;
     reset();
     SDL_Log("Main level init ok");
@@ -33,13 +39,16 @@ void GameScreen::reset() {
     engine->setFontSize();
 
     score = 0;
-    scorecard->text = "0"; yourscore->text="YOUR SCORE: "; highscore->text = "HISCORE: ";
-    player->name = "skater";
+    scorecard->text = "0"; 
+    yourscore->text="YOUR SCORE: "; 
+    highscore->text = "HISCORE: ";
+    
+    player->name = "player";
     loadTextures();
 
     bg->pos = {0,0};   
     bg->v = {SCROLL_SPEED,0};
-    player->pos.y = H/2.f - player->srcRect.h;
+    player->pos = {100, .y = H/2.f - player->srcRect.h};    
     player->v = player->a = {0,0}; 
     scorecard->pos = {(float)W - scorecard->srcRect.w - 20, 20};
     for (int i=0; i<nCols; i++){
@@ -69,7 +78,8 @@ void GameScreen::update(Uint64 dt){
                 SDL_Log("Score: %d", score);
                 scorecard->text = std::to_string(score);
                 nextColumn = (nextColumn+1) % nCols;
-                postEvent(TEXTURE_RELOAD, scorecard);
+                engine->loadEntityTexture(scorecard);
+                scorecard->pos.x = W - scorecard->srcRect.w - 20;
             }
             // уехавшие за левый борт колонны респаунятся справа
             for (int i = 0; i < nCols; i++) {
@@ -91,11 +101,19 @@ void GameScreen::update(Uint64 dt){
 
         if (gameover->pos.y == H/5 && player->pos.y == maxy) {
             // запускаем вылет доски 
-            finalbox->a.y = yourscore->a.y = highscore->a.y = -8*GRAVITY;
+            for (int i=ovrl0 + 1; i<entities.size(); i++) {
+                entities[i]->a = {0, -8* GRAVITY};
+            }
         }
         if (gameover->pos.y == H/5 && player->pos.y == maxy && finalbox->pos.y <= 0.4*H){
+            // останавливаем доску
             finalbox->pos.y = 0.4*H;
-            finalbox->v = finalbox->a = highscore->v = highscore->a = yourscore->v = yourscore->a = {0, 0};
+            for (int i=ovrl0; i<entities.size(); i++) {
+                entities[i]->v = entities[i]->a = {0, 0};
+            }
+            yourscore->pos = finalbox->pos + vec2{145, 67};
+            highscore->pos = finalbox->pos + vec2{145, 117};
+            medal->pos = finalbox->pos + vec2{40, 61};
             state = DEAD;
             SDL_Log("DEAD");
         }
@@ -143,22 +161,24 @@ void GameScreen::startDeath() {
     }
     // поменять картинку
     player->pos.y = clamp(player->pos.y, miny, maxy);
-    player->name = "skater_dead";
+    player->name = "player_lose";
     engine->loadEntityTexture(player);
     
-    // если в потолок, падаем
+    // если в потолок или колонну, падаем
     if (player->pos.y < maxy) {
         player->a.y = 2*GRAVITY;
     };
 
     overlayReset();
+    medal->visible = (score > 0 && score >= maxScore);
 }
 
 void GameScreen::displayOverlays(bool show){
-    for (int i=col0+nCols+1; i<entities.size(); i++)
-        entities[i]-> visible = show;
+    for (int i=ovrl0; i<entities.size(); i++)
+        entities[i]->visible = show;
 }
 
+// расположить выезжающие элементы проигрыша
 void GameScreen::overlayReset(){
     gameover->pos = {(W - gameover->srcRect.w)/2.f, (float)-gameover->srcRect.h};
     gameover->v = {0,0}; 
@@ -168,15 +188,20 @@ void GameScreen::overlayReset(){
     finalbox->v = finalbox->a = {0,0}; 
 
     engine->setFontSize(28);
-    yourscore->pos = finalbox->pos + vec2{150, 67};
-    yourscore->v = yourscore->a = {0,0}; 
+    
     yourscore->text += std::to_string(score);
+    yourscore->pos = finalbox->pos + vec2{145, 67};
+    yourscore->v = yourscore->a = {0,0}; 
     engine->loadEntityTexture(yourscore);
 
-    highscore->pos = finalbox->pos + vec2{150, 117};
-    highscore->v = yourscore->a = {0,0}; 
     highscore->text += std::to_string(maxScore);
+    highscore->pos = finalbox->pos + vec2{145, 117};
+    highscore->v = yourscore->a = {0,0}; 
     engine->loadEntityTexture(highscore);
+
+    medal->pos = finalbox->pos + vec2{40, 61};
+    medal->v = medal->a = {0,0}; 
+
     displayOverlays(true);
 }
 

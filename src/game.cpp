@@ -57,13 +57,7 @@ void Game::run(){
                 break;
             } else {
                 if (event.type == SDL_USEREVENT) {
-                    switch (event.user.code){
-                      case TEXTURE_RELOAD:
-                        SDL_Log("Request to reload texture: %s", ((Entity*) event.user.data1)->name);
-                        // invalidateScore();
-                        engine.loadEntityTexture((Entity*) event.user.data1);
-                        break;
-                    }   
+                    ;
                 } else {
                     currentScene -> handleEvent(event);
                 }
