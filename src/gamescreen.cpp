@@ -50,8 +50,9 @@ void GameScreen::reset() {
     player->v = player->a = {0,0}; 
     scorecard->pos = {(float)W - scorecard->srcRect.w - 20, 20};
     for (int i=0; i<nCols; i++){
-        entities[col0+i]->pos = { (float)W + i * COLUMN_DIST, 
-            -20 - (300.0f * rand())/RAND_MAX};
+        entities[col0+i]->pos = { 
+            1.f * W + i * COLUMN_DIST, 
+            -90 - (210.0f * rand())/RAND_MAX};
         // SDL_Log("Column placed X=%f, Y=%f", 
         //         entities[col0+i]->pos.x, entities[col0+i]->pos.y);
     }
@@ -80,6 +81,12 @@ void GameScreen::update(Uint64 dt){
             if (player->pos.x > entities[col0+nextColumn]->pos.x + COLUMN_WIDTH / 2) 
             {
                 score++;
+                if (score%5==0){
+                    bg->v.x *= 1.1;
+                    for (int i = 0; i < nCols; i++) {
+                        entities[col0+i]->v.x *=1.1;
+                    }
+                }
                 // SDL_Log("Score: %d", score);
                 scorecard->text = std::to_string(score);
                 nextColumn = (nextColumn+1) % nCols;
@@ -195,7 +202,7 @@ void GameScreen::displayOverlays(bool show){
         entities[i]->visible = show;
 }
 
-// расположить выезжающие элементы проигрыша
+// расположить выезжающие элементы экрана проигрыша
 void GameScreen::overlayReset(){
     // SDL_Log("Hiscore is %d", maxScore);
     gameover->pos = {(W - gameover->srcRect.w)/2.f, (float)-gameover->srcRect.h};
@@ -231,5 +238,8 @@ void GameScreen::respawnColumn(int i){
     vec2* curPos = &entities[col0+i]->pos;
     vec2* prevPos = &entities[col0+j]->pos;
     curPos->x = prevPos->x + COLUMN_DIST;
-    curPos->y = clamp(prevPos->y  + 70 - (140.*rand()/RAND_MAX), -320, 0);
+    float shift = (12.*rand()/RAND_MAX); // 0..12
+    shift *= shift;                      // 0..144
+    shift -= 72;                         // -72..72
+    curPos->y = clamp(prevPos->y + shift, -320, -90);
 }

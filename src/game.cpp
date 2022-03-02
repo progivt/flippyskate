@@ -1,3 +1,6 @@
+#include <cstdlib>
+#include <ctime>
+
 #include "game.hpp"
 
 #define WIDTH  800
@@ -14,6 +17,7 @@ Game::Game()
     frames = ticks = 0; 
     lastDrawTime = lastTime = SDL_GetTicks64();
     gameScreen.maxScore = 0;
+    srand(time(NULL));
     // SDL_Log("Game init ok");
 }
 
