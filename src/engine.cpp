@@ -62,10 +62,10 @@ void Engine::loadEntityTexture(Entity* e) {
                 int w, h;
                 SDL_QueryTexture(sdlTexture, NULL, NULL, &w, &h);
                 images[e->name] = Texture {w, h, sdlTexture};
-                SDL_Log("  Texture <%s> loaded from %s, w=%d, h=%d", e->name, path.c_str(), w, h);
+                // SDL_Log("  Texture <%s> loaded from %s, w=%d, h=%d", e->name, path.c_str(), w, h);
             }
         } else {
-            SDL_Log("  Texture <%s> found in cache", e->name);
+            // SDL_Log("  Texture <%s> found in cache", e->name);
         }
         e->texture = &images[e->name];
     } else {
@@ -74,7 +74,7 @@ void Engine::loadEntityTexture(Entity* e) {
         if (e->texture != nullptr) {
             if (e->texture->sdlTexture != nullptr) {
                 SDL_DestroyTexture(e->texture->sdlTexture);
-                SDL_Log("Destroyed text texture");
+                // SDL_Log("Destroyed text texture");
             }
         } else {
             e->texture = new Texture;

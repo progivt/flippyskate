@@ -2,8 +2,6 @@
 #pragma once
 #include "scene.hpp"
 
-#define GO_START   101
-
 class GameScreen : public Scene {
   public:
     GameScreen(Engine* _engine);
@@ -23,4 +21,5 @@ class GameScreen : public Scene {
     void overlayReset();
     void startDeath();
     void respawnColumn(int i);
+    bool isColliding();
 };

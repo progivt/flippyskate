@@ -1,6 +1,11 @@
 #pragma once
 #include <SDL2/SDL.h>
 
+#define GO_START     100
+#define GO_PLAY     101
+#define GO_SCORES   102
+#define UPD_SCORES  200
+
 // стандартный двумерный вектор 
 struct vec2 {
     float x, y;

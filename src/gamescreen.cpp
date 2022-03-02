@@ -2,7 +2,7 @@
 
 #define SCROLL_SPEED (-0.29f)
 #define GRAVITY      0.0008f
-#define JUMP_SPEED   (-0.4f)
+#define JUMP_SPEED   (-0.3f)
 #define COLUMN_DIST  320
 #define COLUMN_WIDTH 96
 
@@ -29,7 +29,6 @@ GameScreen::GameScreen(Engine* _engine)
     highscore = entities[ovrl0+3];
     medal     = entities[ovrl0+4];
     
-    maxScore = 0;
     reset();
     SDL_Log("Main level init ok");
 }
@@ -68,9 +67,14 @@ void GameScreen::update(Uint64 dt){
 
     switch (state) {
       case PLAYING:
-        if (player->pos.y < miny || player->pos.y > maxy) {
+        if (player->pos.y < miny || player->pos.y > maxy || isColliding()) {
             startDeath();
             state = DYING;
+            postEvent(UPD_SCORES, &score);
+            if (score > maxScore){
+                maxScore = score;
+                SDL_Log("Set hiscore to %d", maxScore);
+            }
             SDL_Log("DYING");
         } else {
             // прошли ли очередную колонну?
@@ -146,14 +150,26 @@ void GameScreen::handleEvent(SDL_Event event) {
             SDL_Log("PLAYING");
             break;
           case DEAD:
-            if (score > maxScore)
-                maxScore = score;
             reset();
             break;
         }
     }
     if (event.type == SDL_KEYUP && event.key.keysym.sym == SDLK_ESCAPE && state == DEAD)
         postEvent(GO_START);
+}
+
+bool GameScreen::isColliding(){
+    // рассматриваем след колонну и +одну за ней 
+    for (int i=0; i<2; i++){
+        // костылизм
+        Entity* col = entities[col0 + nextColumn + i%nCols];
+        float px = player->pos.x,     py = player->pos.y,
+              cx = col->pos.x,        cy = col->pos.y;
+        int   pw = player->srcRect.w, ph = player->srcRect.h;
+        if (px+pw > cx && py + 7 < cy + 425 || 
+            px+pw > cx && py + ph > cy + 620) return true; 
+    }
+    return false;
 }
 
 void GameScreen::startDeath() {
@@ -181,6 +197,7 @@ void GameScreen::displayOverlays(bool show){
 
 // расположить выезжающие элементы проигрыша
 void GameScreen::overlayReset(){
+    SDL_Log("Hiscore is %d", maxScore);
     gameover->pos = {(W - gameover->srcRect.w)/2.f, (float)-gameover->srcRect.h};
     gameover->v = {0,0}; 
     gameover->a.y = 2*GRAVITY;

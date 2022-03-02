@@ -7,11 +7,13 @@
 Game::Game() 
   : engine { Engine(WIDTH, HEIGHT) },
     gameScreen { GameScreen(&engine) },
-    startScreen { StartScreen (&engine) } {
+    startScreen { StartScreen (&engine) }, 
+    scoresScreen { ScoresScreen (&engine) } {
     scenes = std::vector<Scene *> {&startScreen, &gameScreen};
     currentScene = &startScreen;
     frames = ticks = 0; 
     lastDrawTime = lastTime = SDL_GetTicks64();
+    gameScreen.maxScore = 0;
     SDL_Log("Game init ok");
 }
 
@@ -56,6 +58,16 @@ void Game::run(){
                     currentScene = &startScreen;
                     currentScene->reset();
                 } 
+                if (event.user.code == GO_SCORES) {
+                    currentScene = &scoresScreen;
+                    currentScene->reset();
+                } 
+                if (event.user.code == UPD_SCORES) {
+                    auto hiscores = &scoresScreen.scores;
+                    hiscores->push_back(*((int*) event.user.data1));
+                    std::sort(hiscores->begin(), hiscores->end(), std::greater<unsigned>{});
+                    hiscores->pop_back();
+                }
                 break;
               default:
                 currentScene -> handleEvent(event);

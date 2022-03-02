@@ -4,6 +4,7 @@
 
 #include <SDL2/SDL.h>
 
+#include "util.hpp"
 #include "entity.hpp"
 #include "engine.hpp"
 

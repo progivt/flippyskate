@@ -7,11 +7,13 @@
 #include "scene.hpp"
 #include "gamescreen.hpp"
 #include "startscreen.hpp"
+#include "scoresscreen.hpp"
 
 class Game {
   public:
     Engine 		engine;
     StartScreen startScreen;
+    ScoresScreen scoresScreen;
     GameScreen gameScreen;
   	std::vector<Scene *> scenes;
     Scene*		currentScene;
