@@ -24,7 +24,7 @@ Engine::Engine(int width, int height)
     if (SDL_SetHint(SDL_HINT_RENDER_DRIVER, "opengl")!=SDL_TRUE)
         SDL_Log("Could not set hint for OpenGL: %s\n", IMG_GetError());    
 
-    window = SDL_CreateWindow("Flappy Skater",
+    window = SDL_CreateWindow("Flippy Skater",
         SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, W, H,
         SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL);
     renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);

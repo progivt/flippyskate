@@ -8,19 +8,19 @@ OBJS = \
   build/entity.o \
   build/util.o
 
-REBUILDABLES = $(OBJS) flappy
+REBUILDABLES = $(OBJS) flippy
 
 vpath %.cpp src
 vpath %.hpp include
 vpath %.o build
 
-all: flappy
-	./build/flappy
+all: flippy
+	./build/flippy
 
-flappy: $(OBJS)
+flippy: $(OBJS)
 	clang++ -F /Library/Frameworks \
 	    -framework SDL2 -framework SDL2_image -framework SDL2_ttf -g \
-	    -o build/flappy $^
+	    -o build/flippy $^
 
 build/%.o: %.cpp
 	clang++ -g -std=c++17 -I./include -F /Library/Frameworks -o $@ -c $<

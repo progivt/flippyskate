@@ -3,7 +3,7 @@
 
 ScoresScreen::ScoresScreen (Engine* _engine) 
   : Scene {_engine, {"bg3", 
-                     "*HI SCORES", 
+                     "*HISCORES", 
                      "*ALMA SCHEGLOVA . . . . . . . . . ", 
                      "*NATASHA KHRABROVA. . . . ",
                      "*SATORI NAKAMOTO. . . . . . . ",

@@ -162,12 +162,13 @@ bool GameScreen::isColliding(){
     // рассматриваем след колонну и +одну за ней 
     for (int i=0; i<2; i++){
         // костылизм
-        Entity* col = entities[col0 + nextColumn + i%nCols];
+        Entity* col = entities[col0 + (nextColumn + i)%nCols];
         float px = player->pos.x,     py = player->pos.y,
               cx = col->pos.x,        cy = col->pos.y;
         int   pw = player->srcRect.w, ph = player->srcRect.h;
-        if (px+pw > cx && py + 7 < cy + 425 || 
-            px+pw > cx && py + ph > cy + 620) return true; 
+        if (px+pw > cx && px < cx + COLUMN_WIDTH && py + 7  < cy + 425 || 
+            px+pw > cx && px < cx + COLUMN_WIDTH && py + ph > cy + 650)
+            return true; 
     }
     return false;
 }
